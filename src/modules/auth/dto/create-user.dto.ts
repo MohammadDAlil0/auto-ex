@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsEmail, IsNotEmpty, IsString, MinLength } from "class-validator";
+import { IsEmail, IsNotEmpty, IsNumber, IsOptional, IsString, MinLength } from "class-validator";
 import { Match } from "src/decorators/validators/confim-password.validator";
 
 export class CreateUserDto {
@@ -42,6 +42,19 @@ export class CreateUserDto {
     @Match('password', { message: 'Passwords do not match' })
     confirmPassword: string;
 
+    @ApiProperty({
+        description: 'Phone Number of a user',
+        type: String,
+        example: '0958463123'
+    })
+    @IsOptional()
+    phoneNumber?: number;
+
+    @ApiProperty({
+        description: 'Role of a user, it is just for testing',
+        type: String,
+        example: 'STUDENT'
+    })
     role: string; // For Testing 
 }
 
