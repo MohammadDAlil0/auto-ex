@@ -1,8 +1,10 @@
-import { Column, DataType, Default, IsEmail, IsNumeric, Table, Unique } from "sequelize-typescript";
+import { BeforeCreate, Column, DataType, Default, IsEmail, IsNumeric, Table, Unique } from "sequelize-typescript";
 import { BaseModel } from "./base.model";
 import { Role } from "src/types/enums";
 import { CreationOptional } from "@sequelize/core";
 import { IsDate, IsOptional } from "class-validator";
+import * as argon from 'argon2';
+import { BadRequestException } from "@nestjs/common";
 
 @Table({
     tableName: 'users',
@@ -55,6 +57,15 @@ export class User extends BaseModel {
 
     @Column(DataType.STRING)
     verifyEmail: CreationOptional<string>;
+
+    @BeforeCreate
+    static async hashPassword(instance: User) {
+        if (instance.hash) {
+            instance.hash = await argon.hash(instance.hash);
+        } else {
+            throw new BadRequestException('Please provide a password when you are creating a user');
+        }
+    }
 
     // @BelongsToMany(() => Exam, () => ExamStudent)
     // @ForeignKey(() => ExamStudent)

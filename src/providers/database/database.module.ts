@@ -6,17 +6,21 @@ import { User } from 'src/models/user.model';
 @Module({
   imports: [
     SequelizeModule.forRootAsync({
-      useFactory: (configService: ConfigService) => ({
-        dialect: 'mysql',
-        host: configService.getOrThrow(`DATA_BASE_HOST_${configService.getOrThrow<string>('NODE_ENV')}`),
-        port: configService.getOrThrow(`DATA_BASE_PORT_${configService.getOrThrow<string>('NODE_ENV')}`),
-        username: configService.getOrThrow(`DATA_BASE_USERNAME_${configService.getOrThrow<string>('NODE_ENV')}`),
-        password: configService.getOrThrow(`DATA_BASE_PASSWORD_${configService.getOrThrow<string>('NODE_ENV')}`),
-        database: configService.getOrThrow(`DATA_BASE_NAME_${configService.getOrThrow<string>('NODE_ENV')}`),
-        models: [User],
-        autoLoadModels: true,
-        synchronize: true,
-      }),
+      useFactory: (configService: ConfigService) => {
+        const nodeEnv = configService.getOrThrow('NODE_ENV');
+        return  {
+          dialect: 'mysql',
+          host: configService.getOrThrow(`DATA_BASE_HOST_${nodeEnv}`),
+          port: parseInt(configService.getOrThrow(`DATA_BASE_PORT_${nodeEnv}`), 10),
+          username: configService.getOrThrow(`DATA_BASE_USERNAME_${nodeEnv}`),
+          password: configService.getOrThrow(`DATA_BASE_PASSWORD_${nodeEnv}`),
+          database: configService.getOrThrow(`DATA_BASE_NAME_${nodeEnv}`),
+          models: [User],
+          autoLoadModels: true,
+          synchronize: true,
+          logging: configService.getOrThrow(`DATA_BASE_LOGGING_${nodeEnv}`) === 'true' ? console.log : false,
+        }
+      },
       inject: [ConfigService],
     }),
   ],

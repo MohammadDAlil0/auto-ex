@@ -13,13 +13,13 @@ export function SignupDecorators() {
   );
 }
 
-// export function LoginDecorators() {
-//     return applyDecorators(
-//         ApiOperation({ summary: 'Login A User' }),
-//         ApiResponse({ status: 201, description: 'You will get an access token' }),
-//         Post('login')
-//     );
-// }
+export function LoginDecorators() {
+    return applyDecorators(
+        ApiOperation({ summary: 'Login A User' }),
+        ApiResponse({ status: 201, description: 'You will get an access token' }),
+        HttpCode(200)
+    );
+}
 
 // export enum UserFilter {
 //     USERNAME = 'USERNAME',
