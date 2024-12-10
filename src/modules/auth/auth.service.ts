@@ -8,6 +8,9 @@ import { Mapper } from '@automapper/core';
 import { JwtService } from '@nestjs/jwt';
 import * as argon from 'argon2';
 import { LoginDto } from './dto/login.dto';
+import { CreateUserResponseDto } from './dto/create-user.response.dto';
+import { UUID } from 'crypto';
+import { ChangeRoleDto } from './dto/change-role.dto';
 
 @Injectable()
 export class AuthService {
@@ -19,38 +22,56 @@ export class AuthService {
     ) {}
 
     async signup(createUserDto: CreateUserDto) {
-      const user = await this.UserModel.create<User>({ ...createUserDto, hash: createUserDto.password });
-      const access_token = await this.getToken(user.id, user.email); 
+      const curUser = await this.UserModel.create<User>({ ...createUserDto, hash: createUserDto.password });
+      const user =  this.mapper.map(curUser, User, CreateUserResponseDto);
+      const access_token = await this.getToken(user.id, user.email);
       return {
         ...user,
         access_token
       }
     }
 
-    
   async login(dto: LoginDto) {
-    const user = await this.UserModel.findOne({
+    const curUser = await this.UserModel.findOne({
       where: {
         email: dto.email
       }
     });
-
-    if (!user) {
+    
+    if (!curUser) {
       throw new NotFoundException('User not found!');
     }
-        
-    const userMathPassword = await argon.verify(user.hash, dto.password);
-
+    
+    const userMathPassword = await argon.verify(curUser.hash, dto.password);
+    
     if (!userMathPassword) {
       throw new BadRequestException('Invalid Password');
     }
-
+    
+    const user =  this.mapper.map(curUser, User, CreateUserResponseDto);
     const access_token = await this.getToken(user.id, user.email); 
     return {
       ...user,
       access_token
     }
   }
+
+  // async changeRole(curUser: User, userId: string, dto: ChangeRoleDto) {
+  //   const [numberOfAffectedRows, affectedRows] = await User.update<User>(
+  //     { role: dto.role, roleChangedBy: curUser.id },
+  //     {
+  //       where: { id: userId },
+  //       returning: true,
+  //     }
+  //   );
+
+  //   if (!numberOfAffectedRows) {
+  //     throw new NotFoundException('Invalid user ID');
+  //   }
+
+  //   const user =  this.mapper.map(affectedRows[0], User, CreateUserResponseDto);
+  //   return user;
+  // }
     
   async getToken(userId: string, email: string): Promise<string> {
     const payload = {

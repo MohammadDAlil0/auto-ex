@@ -55,6 +55,7 @@ export class CreateUserDto {
         type: String,
         example: 'STUDENT'
     })
+    @IsOptional()
     role: string; // For Testing 
 }
 

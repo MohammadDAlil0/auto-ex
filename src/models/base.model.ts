@@ -32,17 +32,4 @@ export class BaseModel extends Model {
         defaultValue: DataType.NOW
     })
     updatedAt: CreationOptional<Date> | null;
-
-    @DeletedAt
-    @Column({ field: 'deletedAt', type: DataType.DATE })
-    deletedAt: Date | null;
-
-    @Column({ type: DataType.STRING(36), allowNull: true })
-    createdBy: string | null;
-
-    @Column({ type: DataType.STRING(36), allowNull: true })
-    updatedBy: string | null;
-
-    @Column({ type: DataType.STRING(36), allowNull: true })
-    deletedBy: string | null;
 }

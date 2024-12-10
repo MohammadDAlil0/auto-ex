@@ -1,10 +1,11 @@
-import { BeforeCreate, Column, DataType, Default, IsEmail, IsNumeric, Table, Unique } from "sequelize-typescript";
+import { AfterCreate, AfterFind, AfterSave, AfterUpdate, BeforeCreate, BelongsTo, Column, DataType, Default, ForeignKey, IsEmail, IsNumeric, Table, Unique } from "sequelize-typescript";
 import { BaseModel } from "./base.model";
 import { Role } from "src/types/enums";
 import { CreationOptional } from "@sequelize/core";
 import { IsDate, IsOptional } from "class-validator";
 import * as argon from 'argon2';
 import { BadRequestException } from "@nestjs/common";
+import { AutoMap } from "@automapper/classes";
 
 @Table({
     tableName: 'users',
@@ -21,21 +22,25 @@ import { BadRequestException } from "@nestjs/common";
     ]
 })
 export class User extends BaseModel {
+    @AutoMap()
     @Column(DataType.STRING)
     username: string;
 
+    @AutoMap()
     @Unique
     @IsEmail
     @Column(DataType.STRING)
     email: string;
   
-    @Default(Role.STUDENT)
+    @AutoMap()
+    @Default(Role.GHOST)
     @Column(DataType.ENUM(...Object.values(Role)))
     role: Role;
   
     @Column(DataType.STRING)
     hash: string;
 
+    @AutoMap()
     @IsNumeric
     @IsOptional()
     @Column(DataType.INTEGER)
@@ -57,6 +62,10 @@ export class User extends BaseModel {
 
     @Column(DataType.STRING)
     verifyEmail: CreationOptional<string>;
+
+    @ForeignKey(() => User)
+    @Column({ type: DataType.STRING(36), allowNull: true })
+    roleChangedBy: string | null;
 
     @BeforeCreate
     static async hashPassword(instance: User) {

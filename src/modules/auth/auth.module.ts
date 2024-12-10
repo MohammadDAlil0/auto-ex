@@ -4,13 +4,17 @@ import { AuthService } from './auth.service';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { User } from 'src/models/user.model';
 import { JwtModule } from '@nestjs/jwt';
+import { AutomapperModule } from '@automapper/nestjs';
+import { UserProfile } from 'src/common/auto-mapper/auto-mapper-profiles';
+import { JWTStrategy } from 'src/common/stratgies/jwt.strategy';
 
 @Module({
   imports: [
     SequelizeModule.forFeature([User]),
-    JwtModule.register({})
+    JwtModule.register({}),
+    AutomapperModule
   ],
   controllers: [AuthController],
-  providers: [AuthService]
+  providers: [JWTStrategy, AuthService, , UserProfile] 
 })
 export class AuthModule {}
