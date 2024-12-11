@@ -15,6 +15,6 @@ import { JWTStrategy } from 'src/common/stratgies/jwt.strategy';
     AutomapperModule
   ],
   controllers: [AuthController],
-  providers: [JWTStrategy, AuthService, , UserProfile] 
+  providers: [JWTStrategy, AuthService, UserProfile] 
 })
 export class AuthModule {}

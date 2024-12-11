@@ -56,22 +56,22 @@ export class AuthService {
     }
   }
 
-  // async changeRole(curUser: User, userId: string, dto: ChangeRoleDto) {
-  //   const [numberOfAffectedRows, affectedRows] = await User.update<User>(
-  //     { role: dto.role, roleChangedBy: curUser.id },
-  //     {
-  //       where: { id: userId },
-  //       returning: true,
-  //     }
-  //   );
+  async changeRole(curUser: User, userId: string, dto: ChangeRoleDto) {
+    const [numberOfAffectedRows, affectedRows] = await User.update<User>(
+      { role: dto.role, roleChangedBy: curUser.id },
+      {
+        where: { id: userId },
+        returning: true,
+      }
+    );
 
-  //   if (!numberOfAffectedRows) {
-  //     throw new NotFoundException('Invalid user ID');
-  //   }
+    if (!numberOfAffectedRows) {
+      throw new NotFoundException('Invalid user ID');
+    }
 
-  //   const user =  this.mapper.map(affectedRows[0], User, CreateUserResponseDto);
-  //   return user;
-  // }
+    const user =  this.mapper.map(affectedRows[0], User, CreateUserResponseDto);
+    return user;
+  }
     
   async getToken(userId: string, email: string): Promise<string> {
     const payload = {
