@@ -28,6 +28,7 @@ async function resetDatabase() {
 
 // Function to drop a specific table
 async function deleteRowsFromTable(tableName) {
+  conosle.log(tableName);
   const client = new Client(config);
   await client.connect();
   try {

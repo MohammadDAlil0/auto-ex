@@ -11,6 +11,9 @@ import { LoginDto } from './dto/login.dto';
 import { CreateUserResponseDto } from './dto/create-user.response.dto';
 import { UUID } from 'crypto';
 import { ChangeRoleDto } from './dto/change-role.dto';
+import { Role } from 'src/types/enums';
+import { Op } from 'sequelize';
+import { Cron } from '@nestjs/schedule';
 
 @Injectable()
 export class AuthService {
@@ -83,5 +86,22 @@ export class AuthService {
       secret: this.config.getOrThrow<string>('JWT_SECRET')
     });
     return token;
+  }
+
+  // */5 * * * * *
+  @Cron('0 0 * * *')
+  async deleteOldUnacceptedUser(): Promise<void> {
+    const thresholdDate = new Date();
+    thresholdDate.setDate(thresholdDate.getDate() - parseInt(this.config.getOrThrow<string>('MIN_DAYS_TO_CLEANUP'), 10));
+    console.log(thresholdDate);
+
+    await this.UserModel.destroy({
+        where: {
+            role: Role.GHOST,
+            createdAt: {
+                [Op.lt]: thresholdDate
+            }
+        }
+    });
   }
 }

@@ -25,24 +25,6 @@ export function LoginDecorators() {
     );
 }
 
-// export enum UserFilter {
-//     USERNAME = 'USERNAME',
-//     EMAIL = 'EMAIL',
-//     ROLE = 'ROLE',
-// }
-
-// export function GetAllUsersDecorators() {
-//     return applyDecorators(
-//         UseInterceptors(CacheInterceptor),
-//         ApiOperation({ summary: 'Get All Users' }),
-//         ApiResponse({ status: 200, description: 'You will get a list of users' }),
-//         ApiBearerAuth(),
-//         UseGuards(JwtGuard, RolesGuard),
-//         Roles(Role.ADMIN, Role.TEACHER),
-//         Get()
-//     );
-// }
-
 export function ChangeRoleDecorator() {
     return applyDecorators(
         ApiOperation({ summary: "Change A User's Role" }),

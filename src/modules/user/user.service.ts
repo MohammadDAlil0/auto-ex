@@ -1,4 +1,38 @@
+import { Mapper } from '@automapper/core';
+import { InjectMapper } from '@automapper/nestjs';
 import { Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/sequelize';
+import { Op } from 'sequelize';
+import { User } from 'src/models/user.model';
+import { QueryParamsDto } from 'src/providers/query-parameters/dto/query-parameters';
+import { GlobalQueryFilter } from 'src/providers/query-parameters/query-parameter.class';
+import { Role } from 'src/types/enums';
 
 @Injectable()
-export class UserService {}
+export class UserService {
+    constructor(
+        @InjectModel(User) private readonly UserModel: typeof User,
+        @InjectMapper() private readonly mapper: Mapper,
+    ) {}
+
+    async getAllUsers(query: QueryParamsDto): Promise<any[]> {
+
+        const queryFilter = new GlobalQueryFilter<User>(query)
+        .setFields(['id', 'username', 'email', 'role'])
+        .setSearch(['username', 'email', 'role'])
+        .setPagination()
+        // .setInclude([
+        //     { model: Exam, as: 'createdExams', attributes: ['id', 'name'] },
+        //     { model: Exam, as: 'exams', attributes: ['id', 'name'] }
+        // ])
+        .getOptions()
+
+        const users = await this.UserModel.findAll(queryFilter);
+        return users.map((obj) => {
+            const user = obj.toJSON();
+            delete user.hash;
+            return user;
+        })
+    }
+
+}
