@@ -10,12 +10,14 @@ import {
 } from 'sequelize-typescript';
 import { CreationOptional } from '@sequelize/core';
 import { UUID } from 'crypto';
+import { AutoMap } from '@automapper/classes';
 
 export class BaseModel extends Model {
+    @AutoMap()
     @PrimaryKey
     @Default(DataType.UUIDV4)
     @Column(DataType.UUID)
-    id: CreationOptional<UUID>;
+    id: string;
 
     @CreatedAt
     @Column({

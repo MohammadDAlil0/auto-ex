@@ -29,7 +29,7 @@ export class AuthController {
 
     @Put('changeRole/:userId')
     @ChangeRoleDecorator()
-    changeRole(@GetUser() curUser: User, @Param('userId') userId: string, dto: ChangeRoleDto) {
+    changeRole(@GetUser() curUser: User, @Param('userId') userId: string, @Body() dto: ChangeRoleDto) {
         return this.authService.changeRole(curUser, userId, dto);
     }
 }

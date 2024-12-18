@@ -25,6 +25,7 @@ export class JWTStrategy extends PassportStrategy(Strategy, 'jwt') {
                 id: payload.sub
             }
         });
+
         if (!user) {
             throw new NotFoundException('User not found')
         }

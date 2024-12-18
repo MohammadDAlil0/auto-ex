@@ -3,7 +3,7 @@ import { UUID } from "crypto";
 
 export class CreateUserResponseDto {
     @AutoMap()
-    id: UUID;
+    id: string;
         
     @AutoMap()
     username: string;

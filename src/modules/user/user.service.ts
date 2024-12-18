@@ -7,6 +7,7 @@ import { User } from 'src/models/user.model';
 import { QueryParamsDto } from 'src/providers/query-parameters/dto/query-parameters';
 import { GlobalQueryFilter } from 'src/providers/query-parameters/query-parameter.class';
 import { Role } from 'src/types/enums';
+import { CreateUserResponseDto } from '../auth/dto/create-user.response.dto';
 
 @Injectable()
 export class UserService {
@@ -15,8 +16,7 @@ export class UserService {
         @InjectMapper() private readonly mapper: Mapper,
     ) {}
 
-    async getAllUsers(query: QueryParamsDto): Promise<any[]> {
-
+    async getAllUsers(query: QueryParamsDto): Promise<CreateUserResponseDto[]> {
         const queryFilter = new GlobalQueryFilter<User>(query)
         .setFields(['id', 'username', 'email', 'role'])
         .setSearch(['username', 'email', 'role'])
@@ -26,13 +26,9 @@ export class UserService {
         //     { model: Exam, as: 'exams', attributes: ['id', 'name'] }
         // ])
         .getOptions()
-
+  
         const users = await this.UserModel.findAll(queryFilter);
-        return users.map((obj) => {
-            const user = obj.toJSON();
-            delete user.hash;
-            return user;
-        })
+        return this.mapper.mapArray(users, User, CreateUserResponseDto);
     }
 
 }

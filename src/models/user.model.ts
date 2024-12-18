@@ -63,9 +63,14 @@ export class User extends BaseModel {
     @Column(DataType.STRING)
     verifyEmail: CreationOptional<string>;
 
+    @AutoMap()
+    @IsOptional()
     @ForeignKey(() => User)
-    @Column({ type: DataType.STRING(36), allowNull: true })
-    roleChangedBy: string | null;
+    @Column(DataType.UUID)
+    roleChangedBy?: string;
+
+    @BelongsTo(() => User, { foreignKey: 'roleChangedBy', as: 'roleChangedByUser' })
+    roleChangedByUser?: User;
 
     @BeforeCreate
     static async hashPassword(instance: User) {

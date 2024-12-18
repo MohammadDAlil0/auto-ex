@@ -4,6 +4,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { DatabaseModule } from 'src/providers/database/database.module';
 import { AuthModule } from './modules/auth/auth.module';
+import { UserModule } from './modules/user/user.module';
 
 @Module({
   imports: [
@@ -12,7 +13,8 @@ import { AuthModule } from './modules/auth/auth.module';
       strategyInitializer: classes(),
     }),
     DatabaseModule,
-    AuthModule
+    AuthModule,
+    UserModule
 ],
   controllers: [],
   providers: [],

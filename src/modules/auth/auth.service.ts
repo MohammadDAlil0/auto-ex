@@ -33,7 +33,7 @@ export class AuthService {
         access_token
       }
     }
-
+  
   async login(dto: LoginDto) {
     const curUser = await this.UserModel.findOne({
       where: {
@@ -60,20 +60,16 @@ export class AuthService {
   }
 
   async changeRole(curUser: User, userId: string, dto: ChangeRoleDto) {
-    const [numberOfAffectedRows, affectedRows] = await User.update<User>(
-      { role: dto.role, roleChangedBy: curUser.id },
-      {
-        where: { id: userId },
-        returning: true,
-      }
-    );
-
-    if (!numberOfAffectedRows) {
+    const updatedUser = await User.findByPk(userId);
+    if (!updatedUser) {
       throw new NotFoundException('Invalid user ID');
     }
+ 
+    updatedUser.role = dto.role;
+    updatedUser.roleChangedBy = userId;
+    await updatedUser.save();
 
-    const user =  this.mapper.map(affectedRows[0], User, CreateUserResponseDto);
-    return user;
+    return this.mapper.map(updatedUser, User, CreateUserResponseDto);
   }
     
   async getToken(userId: string, email: string): Promise<string> {
