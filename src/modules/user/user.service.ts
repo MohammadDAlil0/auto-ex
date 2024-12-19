@@ -1,6 +1,6 @@
 import { Mapper } from '@automapper/core';
 import { InjectMapper } from '@automapper/nestjs';
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Op } from 'sequelize';
 import { User } from 'src/models/user.model';
@@ -29,6 +29,17 @@ export class UserService {
   
         const users = await this.UserModel.findAll(queryFilter);
         return this.mapper.mapArray(users, User, CreateUserResponseDto);
+    }
+
+
+    async deleteUser(userId: string) {
+        const deletedCount = await this.UserModel.destroy<User>({
+          where: { id: userId },
+        });
+    
+        if (deletedCount === 0) {
+          throw new NotFoundException('Invalid user ID');
+        }
     }
 
 }

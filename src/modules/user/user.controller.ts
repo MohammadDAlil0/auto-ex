@@ -1,6 +1,6 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Controller, Delete, Get, Param, ParseUUIDPipe, Query } from '@nestjs/common';
 import { UserService } from './user.service';
-import { GetAllUsersDecorators } from 'src/decorators/appliers/user-appliers.decorator';
+import { DeleteUserDecorators, GetAllUsersDecorators } from 'src/decorators/appliers/user-appliers.decorator';
 import { QueryParamsDto } from 'src/providers/query-parameters/dto/query-parameters';
 import { CreateUserResponseDto } from '../auth/dto/create-user.response.dto';
 
@@ -15,5 +15,10 @@ export class UserController {
     getUsers(@Query() query: QueryParamsDto): Promise<CreateUserResponseDto[]> {
         return this.userService.getAllUsers(query);
     }
-    
+
+    @Delete(':id')
+    @DeleteUserDecorators()
+    deleteUser(@Param('id', ParseUUIDPipe) userId: string) {
+        return this.userService.deleteUser(userId);
+    }
 }

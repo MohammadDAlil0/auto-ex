@@ -1,4 +1,4 @@
-import { applyDecorators, UseGuards } from "@nestjs/common";
+import { applyDecorators, HttpCode, HttpStatus, UseGuards } from "@nestjs/common";
 import { ApiBearerAuth, ApiOperation, ApiResponse } from "@nestjs/swagger";
 import { JwtGuard } from "src/common/guards/jwt.guard";
 import { RolesGuard } from "src/common/guards/roles.guard";
@@ -12,5 +12,16 @@ export function GetAllUsersDecorators() {
         ApiBearerAuth(),
         UseGuards(JwtGuard, RolesGuard),
         Roles(Role.ADMIN)
+    );
+}
+
+export function DeleteUserDecorators() {
+    return applyDecorators(
+        ApiOperation({ summary: 'Delete A User' }),
+        ApiResponse({ status: 204, description: 'You will not get any response' }),
+        ApiBearerAuth(),
+        UseGuards(JwtGuard, RolesGuard),
+        Roles(Role.ADMIN),
+        HttpCode(HttpStatus.NO_CONTENT)
     );
 }

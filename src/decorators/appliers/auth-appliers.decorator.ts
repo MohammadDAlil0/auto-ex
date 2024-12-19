@@ -4,11 +4,6 @@ import { JwtGuard } from 'src/common/guards/jwt.guard';
 import { RolesGuard } from 'src/common/guards/roles.guard';
 import { Role } from 'src/types/enums';
 import { Roles } from '../auth/roles.decorator';
-// import { JwtGuard } from '../guard/jwt.guard';
-// import { Roles } from './role.decorator';
-// import { RolesGuard } from '../guard/roles.guard';
-// import { Role } from '../user.entity';
-// import { CacheInterceptor } from '@nestjs/cache-manager';
 
 export function SignupDecorators() {
   return applyDecorators(
@@ -35,15 +30,3 @@ export function ChangeRoleDecorator() {
         Put('changeRole/:userId')
     );
 }
-
-// export function DeleteUserDecorators() {
-//     return applyDecorators(
-//         ApiOperation({ summary: 'Delete A User' }),
-//         ApiResponse({ status: 204, description: 'You will not get any response' }),
-//         ApiBearerAuth(),
-//         UseGuards(JwtGuard, RolesGuard),
-//         Roles(Role.ADMIN),
-//         HttpCode(HttpStatus.NO_CONTENT),
-//         Delete(':id')
-//     );
-// }

@@ -60,6 +60,10 @@ export class AuthService {
   }
 
   async changeRole(curUser: User, userId: string, dto: ChangeRoleDto) {
+    if (curUser.id == userId) {
+      throw new BadRequestException("You can't change your role")
+    }
+
     const updatedUser = await User.findByPk(userId);
     if (!updatedUser) {
       throw new NotFoundException('Invalid user ID');
@@ -84,12 +88,10 @@ export class AuthService {
     return token;
   }
 
-  // */5 * * * * *
   @Cron('0 0 * * *')
   async deleteOldUnacceptedUser(): Promise<void> {
     const thresholdDate = new Date();
     thresholdDate.setDate(thresholdDate.getDate() - parseInt(this.config.getOrThrow<string>('MIN_DAYS_TO_CLEANUP'), 10));
-    console.log(thresholdDate);
 
     await this.UserModel.destroy({
         where: {
