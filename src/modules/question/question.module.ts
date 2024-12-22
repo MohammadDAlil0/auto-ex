@@ -4,6 +4,7 @@ import { QuestionService } from './question.service';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { Question } from 'src/models/question.model';
 import { AutomapperModule } from '@automapper/nestjs';
+import { QuestionProfile } from 'src/common/auto-mapper/auto-mapper-profiles';
 
 @Module({
   imports: [
@@ -11,6 +12,6 @@ import { AutomapperModule } from '@automapper/nestjs';
     AutomapperModule
   ],
   controllers: [QuestionController],
-  providers: [QuestionService]
+  providers: [QuestionService, QuestionProfile]
 })
 export class QuestionModule {}

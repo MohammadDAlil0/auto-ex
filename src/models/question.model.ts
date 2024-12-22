@@ -23,8 +23,8 @@ export class Question extends BaseModel {
     description: string;
 
     @AutoMap()
-    @Column(DataType.JSON)
-    options: string[];
+    @Column(DataType.TEXT)
+    options: string;
   
     @AutoMap()
     @Column(DataType.INTEGER)
