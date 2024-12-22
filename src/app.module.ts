@@ -17,7 +17,7 @@ import { QuestionModule } from './modules/question/question.module';
     DatabaseModule,
     AuthModule,
     UserModule,
-    // ExamModule,
+    ExamModule,
     QuestionModule
 ],
   controllers: [],

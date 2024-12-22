@@ -7,6 +7,8 @@ import { Mapper } from '@automapper/core';
 import { CreateQuestionResponseDto } from './dto/create-question.response.dto';
 import { User } from 'src/models/user.model';
 import { updateQuestionDto } from './dto/update-question.dto';
+import { QueryParamsDto } from 'src/providers/query-parameters/dto/query-parameters';
+import { GlobalQueryFilter } from 'src/providers/query-parameters/query-parameter.class';
 
 @Injectable()
 export class QuestionService {
@@ -16,8 +18,6 @@ export class QuestionService {
     ) {}
     
     async createQuestion(dto: CreateQuestionDto, curUser: User): Promise<CreateQuestionResponseDto> {
-
-        // TODO: Fix the options attribute
         const question = await this.QuestionModel.create<Question>({
             ...dto,
             options: JSON.stringify(dto.options),
@@ -27,12 +27,18 @@ export class QuestionService {
     }
 
 
-    async getAllQuestions(curUser: User): Promise<CreateQuestionResponseDto[]> {
-        const questions = await this.QuestionModel.findAll<Question>({
-            where: {
-                createdBy: curUser.id,
-            }
-        });
+    async getAllQuestions(query: QueryParamsDto, curUser: User): Promise<CreateQuestionResponseDto[]> {
+        const queryFilter = new GlobalQueryFilter<User>(query)
+                .setFields(['description', 'options', 'answer'])
+                .setSearch(['description'])
+                .setPagination()
+                .setCreatedBy(curUser.id)
+                // .setInclude([
+                //     { model: Exam, as: 'createdExams', attributes: ['id', 'name'] },
+                //     { model: Exam, as: 'exams', attributes: ['id', 'name'] }
+                // ])
+                .getOptions()
+        const questions = await this.QuestionModel.findAll<Question>(queryFilter);
         return this.mapper.mapArray(questions, Question, CreateQuestionResponseDto);
     }
 

@@ -1,10 +1,11 @@
-import { Body, Controller, Delete, Get, Param, ParseUUIDPipe, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseUUIDPipe, Patch, Post, Query } from '@nestjs/common';
 import { QuestionService } from './question.service';
 import { CreateQuestionDecorator, DeleteQuestionDecorator, GetAllQuestionsDecorator, GlobalQuestionDecorator, UpdateQuestionDecorator } from 'src/decorators/appliers/question-appliers.decorator';
 import { CreateQuestionDto } from './dto/create-question.dto';
 import { updateQuestionDto } from './dto/update-question.dto';
 import { GetUser } from 'src/decorators/auth/get-user.decortator';
 import { User } from 'src/models/user.model';
+import { QueryParamsDto } from 'src/providers/query-parameters/dto/query-parameters';
 
 @Controller('question')
 @GlobalQuestionDecorator()
@@ -19,8 +20,8 @@ export class QuestionController {
 
     @Get()
     @GetAllQuestionsDecorator()
-    getAllQuestions(@GetUser() curUser: User) {
-        return this.questionService.getAllQuestions(curUser);
+    getAllQuestions(@Query() query: QueryParamsDto, @GetUser() curUser: User) {
+        return this.questionService.getAllQuestions(query, curUser);
     }
 
     @Patch(':id')

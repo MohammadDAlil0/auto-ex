@@ -1,7 +1,9 @@
-import { BelongsTo, Column, DataType, ForeignKey, Table } from "sequelize-typescript";
+import { BelongsTo, BelongsToMany, Column, DataType, ForeignKey, Table } from "sequelize-typescript";
 import { BaseModel } from "./base.model";
 import { User } from "./user.model";
 import { AutoMap } from "@automapper/classes";
+import { Exam } from "./exam.model";
+import { ExamQuestion } from "./exam-question.model";
 
 @Table({
     tableName: 'questions',
@@ -29,6 +31,9 @@ export class Question extends BaseModel {
     @AutoMap()
     @Column(DataType.INTEGER)
     answer: number;
+
+    @BelongsToMany(() => Exam, () => ExamQuestion)
+    exams: Exam[];
     
     @AutoMap()
     @ForeignKey(() => User)

@@ -31,6 +31,11 @@ export class GlobalQueryFilter<T> {
         return this;
     }
 
+    setCreatedBy(userId: string) {
+        this.where['createdBy'] = userId;
+        return this;
+    }
+
     setPagination() {
         if (this.query.limit) {
             this.limit = this.query.limit;

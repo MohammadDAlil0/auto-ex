@@ -2,6 +2,9 @@ import { Module } from '@nestjs/common';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { ConfigService } from '@nestjs/config';
 import { User } from 'src/models/user.model';
+import { Exam } from 'src/models/exam.model';
+import { Question } from 'src/models/question.model';
+import { ExamQuestion } from 'src/models/exam-question.model';
 
 @Module({
   imports: [
@@ -15,7 +18,7 @@ import { User } from 'src/models/user.model';
           username: configService.getOrThrow(`DATA_BASE_USERNAME_${nodeEnv}`),
           password: configService.getOrThrow(`DATA_BASE_PASSWORD_${nodeEnv}`),
           database: configService.getOrThrow(`DATA_BASE_NAME_${nodeEnv}`),
-          models: [User],
+          models: [User, Exam, Question, ExamQuestion],
           autoLoadModels: true,
           synchronize: true,
           logging: configService.getOrThrow(`DATA_BASE_LOGGING_${nodeEnv}`) === 'true' ? console.log : false,

@@ -24,7 +24,7 @@ export function CreateExamDecorator() {
 export function GetAllExamsDecorator() {
     return applyDecorators(
         ApiOperation({ summary: 'Get All Exams' }),
-        ApiResponse({ status: 201, description: 'You will get all the exams' })
+        ApiResponse({ status: 200, description: 'You will get all the exams' })
     );
 }
 
@@ -39,7 +39,7 @@ export function GetExam() {
 export function UpdateExamDecorator() {
     return applyDecorators(
         ApiOperation({ summary: 'Update Exam' }),
-        ApiResponse({ status: 201, description: 'You will get the updated exam' }),
+        ApiResponse({ status: 200, description: 'You will get the updated exam' }),
     );
 }
 
@@ -51,3 +51,17 @@ export function DeleteExamDecorator() {
     );
 }
 
+export function CreateExamQuestionDecorator() {
+    return applyDecorators(
+        ApiOperation({ summary: 'Add Question For An Exam' }),
+        ApiResponse({ status: 201, description: 'You will get a message' }),
+    );
+}
+
+
+export function RemoveExamQuestionDecorator() {
+    return applyDecorators(
+        ApiOperation({ summary: 'Remove Student From An Exam' }),
+        ApiResponse({ status: 204, description: 'You will not get anything' }),
+    );
+}
