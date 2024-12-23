@@ -14,7 +14,7 @@ import { Question } from './question.model';
 import { ExamQuestion } from './exam-question.model';
 
 @Table({
-    tableName: 'exams',
+    tableName: 'exams_table',
     timestamps: true,
     indexes: [
         {
@@ -45,7 +45,7 @@ export class Exam extends BaseModel {
     // students: User[];
   
     @BelongsToMany(() => Question, () => ExamQuestion)
-    questions: Question[];
+    questionsList: Question[];
 
     @ForeignKey(() => User)
     @Column(DataType.UUID)

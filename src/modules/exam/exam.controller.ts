@@ -1,12 +1,12 @@
 import { Body, Controller, Delete, Get, Param, ParseUUIDPipe, Patch, Post, Query } from '@nestjs/common';
 import { CreateExamDto } from './dto/create-exam.dto';
 import { ExamService } from './exam.service';
-import { CreateExamDecorator, CreateExamQuestionDecorator, DeleteExamDecorator, GetAllExamsDecorator, GetExam, GlobalExamDecorator, RemoveExamQuestionDecorator, UpdateExamDecorator } from 'src/decorators/appliers/exam-appliers.decorator';
+import { CreateExamDecorator, CreateExamQuestionDecorator, DeleteExamDecorator, GetAllExamsDecorator, GetExam, GlobalExamDecorator, RemoveExamQuestionDecorator, UpdateExamDecorator, UpdateExamQuestionDecorator } from 'src/decorators/appliers/exam-appliers.decorator';
 import { GetUser } from 'src/decorators/auth/get-user.decortator';
 import { User } from 'src/models/user.model';
 import { QueryParamsDto } from 'src/providers/query-parameters/dto/query-parameters';
 import { UpdateExamDto } from './dto/update-exam.dto';
-import { ExamQuestionDto } from './dto/exam-question.dto';
+import { CreateExamQuestionDto } from './dto/create-exam-question.dto';
 
 @GlobalExamDecorator()
 @Controller('exam')
@@ -21,7 +21,7 @@ export class ExamController {
 
     @Post('add-question')
     @CreateExamQuestionDecorator()
-    createExamQuestion(@Body() dto: ExamQuestionDto) {
+    createExamQuestion(@Body() dto: CreateExamQuestionDto) {
         return this.examService.createExamQuestion(dto);
     }
 

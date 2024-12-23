@@ -5,6 +5,7 @@ import { User } from 'src/models/user.model';
 import { Exam } from 'src/models/exam.model';
 import { Question } from 'src/models/question.model';
 import { ExamQuestion } from 'src/models/exam-question.model';
+import { ExamStudent } from 'src/models/exam-student.model';
 
 @Module({
   imports: [
@@ -18,7 +19,7 @@ import { ExamQuestion } from 'src/models/exam-question.model';
           username: configService.getOrThrow(`DATA_BASE_USERNAME_${nodeEnv}`),
           password: configService.getOrThrow(`DATA_BASE_PASSWORD_${nodeEnv}`),
           database: configService.getOrThrow(`DATA_BASE_NAME_${nodeEnv}`),
-          models: [User, Exam, Question, ExamQuestion],
+          models: [User, Exam, Question, ExamQuestion, ExamStudent],
           autoLoadModels: true,
           synchronize: true,
           logging: configService.getOrThrow(`DATA_BASE_LOGGING_${nodeEnv}`) === 'true' ? console.log : false,

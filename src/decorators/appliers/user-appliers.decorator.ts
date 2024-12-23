@@ -25,3 +25,12 @@ export function DeleteUserDecorators() {
         HttpCode(HttpStatus.NO_CONTENT)
     );
 }
+
+export function AddStudentExamDecorators() {
+    return applyDecorators(
+        ApiOperation({ summary: 'Add student for an exam' }),
+        ApiResponse({ status: 200, description: 'You will get a message' }),
+        ApiBearerAuth(),
+        UseGuards(JwtGuard),
+    )
+}

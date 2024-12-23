@@ -6,7 +6,7 @@ import { Exam } from "./exam.model";
 import { ExamQuestion } from "./exam-question.model";
 
 @Table({
-    tableName: 'questions',
+    tableName: 'questions_table',
     timestamps: true,
     indexes: [
         {
@@ -33,7 +33,7 @@ export class Question extends BaseModel {
     answer: number;
 
     @BelongsToMany(() => Exam, () => ExamQuestion)
-    exams: Exam[];
+    examsList: Exam[];
     
     @AutoMap()
     @ForeignKey(() => User)

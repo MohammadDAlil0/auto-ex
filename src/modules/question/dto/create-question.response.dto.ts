@@ -5,6 +5,9 @@ import { AutoMap } from "@automapper/classes";
 
 export class CreateQuestionResponseDto {
     @AutoMap()
+    id: string;
+
+    @AutoMap()
     description: string;
 
     @AutoMap()

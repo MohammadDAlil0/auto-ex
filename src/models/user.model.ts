@@ -8,7 +8,7 @@ import { BadRequestException } from "@nestjs/common";
 import { AutoMap } from "@automapper/classes";
 
 @Table({
-    tableName: 'users',
+    tableName: 'usersTable',
     timestamps: true,
     indexes: [
         {

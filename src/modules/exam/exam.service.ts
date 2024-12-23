@@ -4,13 +4,14 @@ import { InjectModel } from '@nestjs/sequelize';
 import { Exam } from 'src/models/exam.model';
 import { CreateExamDto } from './dto/create-exam.dto';
 import { User } from 'src/models/user.model';
-import { CreateExamResponseDto } from './dto/create-exam.response.dto';
 import { QueryParamsDto } from 'src/providers/query-parameters/dto/query-parameters';
 import { GlobalQueryFilter } from 'src/providers/query-parameters/query-parameter.class';
 import { UpdateExamDto } from './dto/update-exam.dto';
 import { InjectMapper } from '@automapper/nestjs';
-import { ExamQuestionDto } from './dto/exam-question.dto';
+import { CreateExamQuestionDto } from './dto/create-exam-question.dto';
 import { ExamQuestion } from 'src/models/exam-question.model';
+import { CreateExamQuestionResponseDto } from './dto/create-exam-question.respose.dto';
+import { CreateExamResponseDto } from './dto/create-exam.response.dto';
 
 @Injectable()
 export class ExamService {
@@ -28,11 +29,11 @@ export class ExamService {
         return this.mapper.map(exam, Exam, CreateExamResponseDto)
     }
 
-    async createExamQuestion(dto: ExamQuestionDto) {
+    async createExamQuestion(dto: CreateExamQuestionDto) {
         const doc = await this.ExamQuestionModel.create({
             ...dto
         });
-        return doc.toJSON();
+        return this.mapper.map(doc, ExamQuestion, CreateExamQuestionResponseDto)
     }
 
     async deleteExamQuestion(examStudentId: string) {

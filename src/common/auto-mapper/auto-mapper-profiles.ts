@@ -6,7 +6,7 @@ import { CreateUserResponseDto } from 'src/modules/auth/dto/create-user.response
 import { Question } from 'src/models/question.model';
 import { CreateQuestionResponseDto } from 'src/modules/question/dto/create-question.response.dto';
 import { Exam } from 'src/models/exam.model';
-import { CreateExamResponseDto } from 'src/modules/exam/dto/create-exam.response.dto';
+import { CreateExamResponseDto } from 'src/modules/exam/dto/update-exam.response.dto';
 
 @Injectable()
 export class UserProfile extends AutomapperProfile {

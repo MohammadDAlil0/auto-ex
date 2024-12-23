@@ -32,7 +32,7 @@ export function GetExam() {
     return applyDecorators(
         ApiOperation({ summary: 'Get the exam with its question if its allowed'}),
         ApiResponse({ status: 200, description: 'You will get an exam with its questions, I will get the students rolled in the exam of you are a Teacher or an Admin' }),
-        Roles(Role.STUDENT, Role.TEACHER)
+        Roles(Role.STUDENT, Role.TEACHER, Role.ADMIN)
     )
 }
 
@@ -63,5 +63,12 @@ export function RemoveExamQuestionDecorator() {
     return applyDecorators(
         ApiOperation({ summary: 'Remove Student From An Exam' }),
         ApiResponse({ status: 204, description: 'You will not get anything' }),
+    );
+}
+
+export function UpdateExamQuestionDecorator() {
+    return applyDecorators(
+        ApiOperation({ summary: 'Update Question For An Exam' }),
+        ApiResponse({ status: 200, description: 'You will get the updated question' }),
     );
 }

@@ -4,3 +4,9 @@ export enum Role {
     TEACHER = 'TEACHER',
     ADMIN = 'ADMIN',
 }
+
+export enum ExamStatus {
+    ONQUEUE = 'ONQUEUE',
+    REJECTED = 'REJECTED',
+    ACCEPTED = 'ACCEPTED' 
+}
