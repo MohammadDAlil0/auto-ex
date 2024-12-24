@@ -1,7 +1,6 @@
 import { AutoMap } from "@automapper/classes";
 import { ApiProperty } from "@nestjs/swagger";
 import { IsDefined, IsNumber, IsUUID } from "class-validator";
-import { Default } from "sequelize-typescript";
 
 export class CreateExamQuestionDto {
     @AutoMap()
@@ -31,6 +30,5 @@ export class CreateExamQuestionDto {
         example: 'xxxx-xxxx-xxxx-xxxx'
     })
     @IsNumber()
-    @Default(10)
     mark: string;
 }

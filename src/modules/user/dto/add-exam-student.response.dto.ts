@@ -3,7 +3,10 @@ import { ApiProperty } from "@nestjs/swagger";
 import { IsDefined, IsUUID } from "class-validator";
 import { ExamStatus } from "src/types/enums";
 
-export class AddExamStudentDto {
+export class AddExamStudentResponseDto {
+    @AutoMap()
+    id: string;
+    
     @AutoMap()
     examId: string;
 
@@ -12,4 +15,7 @@ export class AddExamStudentDto {
 
     @AutoMap()
     status: ExamStatus;
+
+    @AutoMap()
+    acceptedBy: string;
 } 

@@ -1,6 +1,6 @@
 import { Mapper } from '@automapper/core';
 import { InjectMapper } from '@automapper/nestjs';
-import { Body, Injectable, NotFoundException } from '@nestjs/common';
+import { Body, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Op } from 'sequelize';
 import { User } from 'src/models/user.model';
@@ -11,6 +11,7 @@ import { CreateUserResponseDto } from '../auth/dto/create-user.response.dto';
 import { AddExamStudentDto } from './dto/add-exam-student.dto';
 import { ExamStudent } from 'src/models/exam-student.model';
 import { AddExamStudentResponseDto } from './dto/add-exam-student.response.dto';
+import { Exam } from 'src/models/exam.model';
 
 @Injectable()
 export class UserService {
@@ -30,7 +31,7 @@ export class UserService {
         //     { model: Exam, as: 'exams', attributes: ['id', 'name'] }
         // ])
         .getOptions()
-  
+
         const users = await this.UserModel.findAll(queryFilter);
         return this.mapper.mapArray(users, User, CreateUserResponseDto);
     }
@@ -40,18 +41,37 @@ export class UserService {
         const deletedCount = await this.UserModel.destroy<User>({
           where: { id: userId },
         });
-    
+
         if (deletedCount === 0) {
           throw new NotFoundException('Invalid user ID');
         }
     }
 
-    async addStudentExan(@Body() dto: AddExamStudentDto) {
-      // TODO
+    async addExamStudent(@Body() dto: AddExamStudentDto, curUser: User) {
       const doc = await this.ExamStudentModel.create({
-        ...dto
+        ...dto,
+        acceptedBy: curUser.id
       });
       return this.mapper.map(doc, ExamStudent, AddExamStudentResponseDto);
+    }
+
+    async deleteExamStudent(studentExamId: string, curUser: User) {
+      const doc = await this.ExamStudentModel.findOne({
+        where: { id: studentExamId },
+        include: {
+          model: Exam,
+          as: 'exam',
+          attributes: ['id', 'createdBy'],
+        },
+      });
+      if (!doc) {
+        throw new NotFoundException('No Student for this exam with this ID')
+      };
+      console.log(doc, doc.exam);
+      if (curUser.role === Role.TEACHER && curUser.id !== doc.exam.createdBy) {
+        throw new ForbiddenException('Only the owner of the exam can remove students');
+      }
+      await doc.destroy();
     }
 
 }

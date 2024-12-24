@@ -1,4 +1,4 @@
-import { Table, Column, ForeignKey, DataType, Default } from 'sequelize-typescript';
+import { Table, Column, ForeignKey, DataType, Default, BelongsTo } from 'sequelize-typescript';
 import { BaseModel } from './base.model';
 import { Exam } from './exam.model';
 import { User } from './user.model';
@@ -15,6 +15,9 @@ export class ExamStudent extends BaseModel {
   @Column(DataType.UUID)
   examId: string;
 
+  @BelongsTo(() => Exam, { foreignKey: 'examId', as: 'exam' })
+  exam: Exam;
+
   @AutoMap()
   @ForeignKey(() => User)
   @Column(DataType.UUID)
@@ -28,4 +31,13 @@ export class ExamStudent extends BaseModel {
   @AutoMap()
   @Column(DataType.INTEGER)
   mark: number;
+
+
+  @AutoMap()
+  @ForeignKey(() => User)
+  @Column(DataType.UUID)
+  acceptedBy: string;
+
+  @BelongsTo(() => User, { foreignKey: 'acceptedBy', as: 'acceptedByUser' })
+  acceptedByUser: User;
 }

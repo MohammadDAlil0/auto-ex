@@ -31,6 +31,18 @@ export function AddStudentExamDecorators() {
         ApiOperation({ summary: 'Add student for an exam' }),
         ApiResponse({ status: 200, description: 'You will get a message' }),
         ApiBearerAuth(),
-        UseGuards(JwtGuard),
+        UseGuards(JwtGuard, RolesGuard),
+        Roles(Role.ADMIN, Role.TEACHER)
     )
+}
+
+export function DeleteStudentExamDecorators() {
+    return applyDecorators(
+        ApiOperation({ summary: 'Remove student from the current exam' }),
+        ApiResponse({ status: 204, description: 'You will not get any response' }),
+        ApiBearerAuth(),
+        UseGuards(JwtGuard, RolesGuard),
+        Roles(Role.ADMIN, Role.TEACHER),
+        HttpCode(HttpStatus.NO_CONTENT)
+    );
 }
