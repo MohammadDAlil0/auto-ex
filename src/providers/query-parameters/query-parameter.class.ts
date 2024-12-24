@@ -1,7 +1,9 @@
 import { Op } from 'sequelize';
 import { QueryParamsDto } from './dto/query-parameters';
+import { BadRequestException } from '@nestjs/common';
 
 export class GlobalQueryFilter<T> {
+    private modelAttributes: string[];
     private query: QueryParamsDto;
     private attributes: string[] | undefined;
     private offset: number | undefined;
@@ -9,26 +11,44 @@ export class GlobalQueryFilter<T> {
     private where: any = {};
     private include: any[] | undefined;
 
-    constructor(query: QueryParamsDto) {
+    constructor(query: QueryParamsDto, modelAttributes: string[]) {
+        this.modelAttributes = modelAttributes;
         this.query = query;
     }
 
-    setFields(modelAttributes: string[]) {
+    setFields() {
         if (this.query.fields) {
-            this.attributes = this.query.fields.filter(field => modelAttributes.includes(field));
+            this.attributes = this.query.fields.filter(field => this.modelAttributes.includes(field));
         }
         return this;
     }
 
-    setSearch(modelAttributes: string[]) {
+    setSearch() {
         if (this.query.search) {
-            this.where[Op.or] = modelAttributes
+            this.where[Op.or] = this.modelAttributes
                 .filter(attr => typeof attr === 'string')
                 .map(attr => ({
                     [attr]: { [Op.like]: `%${this.query.search}%` }
                 }));
         }
         return this;
+    }
+    
+    setFilter() {
+        try {
+            if (this.query.filter) {
+                this.query.filter = JSON.parse(this.query.filter);
+                const pureQueryFilter = {};
+                this.modelAttributes.forEach(attribute => {
+                    if (this.query.filter[attribute]) pureQueryFilter[attribute] = this.query.filter[attribute]
+                });
+                Object.assign(this.where, pureQueryFilter)
+            }
+            return this;
+        }
+        catch(err) {
+            throw new BadRequestException('The filter paramater must be of type JSON')
+        }
     }
 
     setCreatedBy(userId: string) {

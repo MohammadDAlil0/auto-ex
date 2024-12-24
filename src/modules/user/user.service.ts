@@ -22,9 +22,10 @@ export class UserService {
     ) {}
 
     async getAllUsers(query: QueryParamsDto): Promise<CreateUserResponseDto[]> {
-        const queryFilter = new GlobalQueryFilter<User>(query)
-        .setFields(['id', 'username', 'email', 'role'])
-        .setSearch(['username', 'email', 'role'])
+        const queryFilter = new GlobalQueryFilter<User>(query, ['id', 'username', 'email', 'role'])
+        .setFields()
+        .setSearch()
+        .setFilter()
         .setPagination()
         // .setInclude([
         //     { model: Exam, as: 'createdExams', attributes: ['id', 'name'] },

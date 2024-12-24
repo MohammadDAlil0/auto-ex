@@ -6,6 +6,7 @@ import {
   Min,
   IsIn,
   IsBoolean,
+  IsObject,
 } from 'class-validator';
 import { Transform } from 'class-transformer';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
@@ -27,6 +28,14 @@ export class QueryParamsDto {
     description: 'Search query string.'
   })
   search?: string;
+
+  @IsOptional()
+  @IsString()
+  @ApiPropertyOptional({
+    description: 'Filter your query'
+  })
+  filter?: string;
+  
 
   @IsOptional()
   @IsInt()
