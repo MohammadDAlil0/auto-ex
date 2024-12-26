@@ -1,4 +1,4 @@
-import { Body, Controller, Param, Post, Put, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { ChangeRoleDecorator, LoginDecorators, SignupDecorators } from 'src/decorators/appliers/auth-appliers.decorator';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -14,7 +14,7 @@ import { ChangeRoleDto } from './dto/change-role.dto';
 @Controller('auth')
 export class AuthController {
     constructor(private readonly authService: AuthService) {}
-    
+
     @Post('signup')
     @SignupDecorators()
     signup(@Body() createUserDto: CreateUserDto) {

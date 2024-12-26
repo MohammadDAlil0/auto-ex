@@ -17,6 +17,8 @@ import { ExamStudent } from 'src/models/exam-student.model';
 import { AddExamStudentDto } from './dto/add-exam-student.dto';
 import { ExamStatus, Role } from 'src/types/enums';
 import { AddExamStudentResponseDto } from './dto/add-exam-student.response.dto';
+import { RegisterExamDto } from './dto/register-exam.dto';
+import { ChangeStatusDto } from './dto/change-status.dto';
 
 @Injectable()
 export class ExamService {
@@ -73,13 +75,13 @@ export class ExamService {
                 {model: User, as: 'creator', attributes: ['id', 'username']},
                 {model: User, as: 'studentsList', attributes: ['id', 'username']}
             ]
-        })
+        });
         // If the owner of the exam request his exam
         if (exam.createdBy === user.id) {
             return exam
         }
-        const isStudent = exam.studentsList.find((el) => el.id === user.id);
-        if (!isStudent || exam.date.getTime() >= Date.now()) {
+        const isStudent: any = exam.studentsList.find((el) => el.id === user.id);
+        if (!isStudent || isStudent.ExamStudent.status !== ExamStatus.ACCEPTED || exam.date.getTime() >= Date.now()) {
             throw new UnauthorizedException("You don't have a permission to get the exam");
         }
         const plainExam = exam.toJSON();
@@ -151,5 +153,25 @@ export class ExamService {
             }
         })
     }
-}
 
+    async registerExam(dto: RegisterExamDto, curUser: User) {
+        const doc = await this.ExamStudentModel.create({
+            ...dto,
+            studentId: curUser.id,
+            status: ExamStatus.ONQUEUE
+        });
+        return this.mapper.map(doc, ExamStudent, AddExamStudentResponseDto);
+    }
+
+    async changeStatus(curUser: User, dto: ChangeStatusDto) {
+        const doc = await this.ExamStudentModel.findOne({
+            where: {
+                examId: dto.examId,
+                studentId: dto.studentId
+            }
+        });
+        doc.status = dto.status;
+        doc.acceptedBy = curUser.id;
+        return await doc.save();
+    }
+}

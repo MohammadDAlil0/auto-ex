@@ -93,3 +93,23 @@ export function UpdateExamQuestionDecorator() {
         ApiResponse({ status: 200, description: 'You will get the updated question' }),
     );
 }
+
+export function RegisterExamDecorator() {
+    return applyDecorators(
+        ApiOperation({ summary: 'Register a student in an exam' }),
+        ApiResponse({ status: 200, description: 'You will get a message' }),
+        ApiBearerAuth(),
+        UseGuards(JwtGuard, RolesGuard),
+        Roles(Role.STUDENT, Role.ADMIN, Role.TEACHER)
+    )
+}
+
+export function ChangeStatusDecorator() {
+    return applyDecorators(
+        ApiOperation({ summary: 'Accept or regect a user for an exam' }),
+        ApiResponse({ status: 200, description: 'You will get a message' }),
+        ApiBearerAuth(),
+        UseGuards(JwtGuard, RolesGuard),
+        Roles(Role.ADMIN, Role.TEACHER)
+    )
+}
