@@ -32,8 +32,8 @@ export class Question extends BaseModel {
     @Column(DataType.INTEGER)
     answer: number;
 
-    @BelongsToMany(() => Exam, () => ExamQuestion)
-    examsList: Exam[];
+    // @BelongsToMany(() => Exam, () => ExamQuestion)
+    // examsList: Exam[];
     
     @AutoMap()
     @ForeignKey(() => User)

@@ -9,7 +9,7 @@ import { UserProfile } from 'src/common/auto-mapper/auto-mapper-profiles';
 
 @Module({
   imports: [
-    SequelizeModule.forFeature([User, ExamStudent]),
+    SequelizeModule.forFeature([User]),
     AutomapperModule,
   ],
   controllers: [UserController],

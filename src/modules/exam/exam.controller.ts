@@ -1,12 +1,13 @@
 import { Body, Controller, Delete, Get, Param, ParseUUIDPipe, Patch, Post, Query } from '@nestjs/common';
 import { CreateExamDto } from './dto/create-exam.dto';
 import { ExamService } from './exam.service';
-import { CreateExamDecorator, CreateExamQuestionDecorator, DeleteExamDecorator, GetAllExamsDecorator, GetExam, GlobalExamDecorator, RemoveExamQuestionDecorator, UpdateExamDecorator, UpdateExamQuestionDecorator } from 'src/decorators/appliers/exam-appliers.decorator';
+import { AddStudentExamDecorators, CreateExamDecorator, CreateExamQuestionDecorator, DeleteExamDecorator, DeleteStudentExamDecorators, GetAllExamsDecorator, GetExamDecorator, GlobalExamDecorator, RemoveExamQuestionDecorator, UpdateExamDecorator, UpdateExamQuestionDecorator } from 'src/decorators/appliers/exam-appliers.decorator';
 import { GetUser } from 'src/decorators/auth/get-user.decortator';
 import { User } from 'src/models/user.model';
 import { QueryParamsDto } from 'src/providers/query-parameters/dto/query-parameters';
 import { UpdateExamDto } from './dto/update-exam.dto';
 import { CreateExamQuestionDto } from './dto/create-exam-question.dto';
+import { AddExamStudentDto } from './dto/add-exam-student.dto';
 
 @GlobalExamDecorator()
 @Controller('exam')
@@ -17,6 +18,30 @@ export class ExamController {
     @CreateExamDecorator()
     createExam(@Body() dto: CreateExamDto, @GetUser() curUser: User) {
         return this.examService.createExam(dto, curUser);
+    }
+
+    @Get()
+    @GetAllExamsDecorator()
+    getAllExams(@Query() query: QueryParamsDto, @GetUser() curUser: User) {
+        return this.examService.getAllExams(query, curUser);
+    }
+
+    @Get(':id')
+    @GetExamDecorator()
+    getExam(@Param('id', ParseUUIDPipe) examId: string, @GetUser() curUser: User) {
+        return this.examService.getExam(examId, curUser);
+    }
+
+    @Patch(':id')
+    @UpdateExamDecorator()
+    updateExam(@Param('id', ParseUUIDPipe) examId: string, @Body() dto: UpdateExamDto, @GetUser() curUser: User) {
+        return this.examService.updateExam(examId, dto, curUser);
+    }
+
+    @Delete(':id')
+    @DeleteExamDecorator()
+    deleteExam(@Param('id', ParseUUIDPipe) examId: string, @GetUser() curUser: User) {
+        this.examService.deleteExam(examId, curUser);
     }
 
     @Post('add-question')
@@ -31,27 +56,15 @@ export class ExamController {
         return this.examService.deleteExamQuestion(id);
     }
 
-    @Get()
-    @GetAllExamsDecorator()
-    getAllExams(@Query() query: QueryParamsDto, @GetUser() curUser: User) {
-        return this.examService.getAllExams(query, curUser);
+    @Post('add-student-exam')
+    @AddStudentExamDecorators()
+    addStudentExan(@Body() dto: AddExamStudentDto, @GetUser() curUser: User) {
+        return this.examService.addExamStudent(dto, curUser);
     }
 
-    // @Get(':id')
-    // @GetExam()
-    // getExam(@Param('id', ParseUUIDPipe) examId: string, @GetUser() curUser: User) {
-    //     return this.examService.getExam(examId, curUser);
-    // }
-
-    @Patch(':id')
-    @UpdateExamDecorator()
-    updateExam(@Param('id', ParseUUIDPipe) examId: string, @Body() dto: UpdateExamDto, @GetUser() curUser: User) {
-        return this.examService.updateExam(examId, dto, curUser);
-    }
-
-    @Delete(':id')
-    @DeleteExamDecorator()
-    deleteExam(@Param('id', ParseUUIDPipe) examId: string, @GetUser() curUser: User) {
-        this.examService.deleteExam(examId, curUser);
+    @Delete('delete-student-exam/:id')
+    @DeleteStudentExamDecorators()
+    deleteStudentExam(@Body() dto: AddExamStudentDto, @GetUser() curUser: User) {
+        return this.examService.deleteExamStudent(dto, curUser);
     }
 }

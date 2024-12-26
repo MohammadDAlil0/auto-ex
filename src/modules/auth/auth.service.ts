@@ -72,7 +72,7 @@ export class AuthService {
     updatedUser.role = dto.role;
     updatedUser.roleChangedBy = userId;
     await updatedUser.save();
-
+    
     return this.mapper.map(updatedUser, User, CreateUserResponseDto);
   }
     

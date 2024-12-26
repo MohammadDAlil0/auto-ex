@@ -24,7 +24,6 @@ async function bootstrap() {
 
   // Global filters and interceptors
   app.useGlobalFilters(new SequelizeExceptionFilter());
-  
 
   await app.listen(process.env.PORT ?? 3000);
 }

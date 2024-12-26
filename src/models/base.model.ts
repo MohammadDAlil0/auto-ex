@@ -9,7 +9,6 @@ import {
     PrimaryKey
 } from 'sequelize-typescript';
 import { CreationOptional } from '@sequelize/core';
-import { UUID } from 'crypto';
 import { AutoMap } from '@automapper/classes';
 
 export class BaseModel extends Model {

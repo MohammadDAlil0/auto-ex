@@ -15,9 +15,6 @@ export class ExamStudent extends BaseModel {
   @Column(DataType.UUID)
   examId: string;
 
-  @BelongsTo(() => Exam, { foreignKey: 'examId', as: 'exam' })
-  exam: Exam;
-
   @AutoMap()
   @ForeignKey(() => User)
   @Column(DataType.UUID)
@@ -38,6 +35,6 @@ export class ExamStudent extends BaseModel {
   @Column(DataType.UUID)
   acceptedBy: string;
 
-  @BelongsTo(() => User, { foreignKey: 'acceptedBy', as: 'acceptedByUser' })
-  acceptedByUser: User;
+  // @BelongsTo(() => User, { foreignKey: 'acceptedBy', as: 'acceptedByUser' })
+  // acceptedByUser: User;
 }

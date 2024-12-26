@@ -8,7 +8,9 @@ import { CreateQuestionResponseDto } from 'src/modules/question/dto/create-quest
 import { Exam } from 'src/models/exam.model';
 import { CreateExamResponseDto } from 'src/modules/exam/dto/create-exam.response.dto';
 import { ExamStudent } from 'src/models/exam-student.model';
-import { AddExamStudentResponseDto } from 'src/modules/user/dto/add-exam-student.response.dto';
+import { AddExamStudentResponseDto } from 'src/modules/exam/dto/add-exam-student.response.dto';
+import { CreateExamQuestionResponseDto } from 'src/modules/exam/dto/create-exam-question.respose.dto';
+import { ExamQuestion } from 'src/models/exam-question.model';
 
 @Injectable()
 export class UserProfile extends AutomapperProfile {
@@ -48,6 +50,7 @@ export class ExamProfile extends AutomapperProfile {
   override get profile(): MappingProfile {
     return (mapper: Mapper) => {
         createMap(mapper, Exam, CreateExamResponseDto);
+        createMap(mapper, ExamQuestion, CreateExamQuestionResponseDto);
     };
   }
 }

@@ -12,6 +12,7 @@ import { User } from './user.model';
 import { AutoMap } from '@automapper/classes';
 import { Question } from './question.model';
 import { ExamQuestion } from './exam-question.model';
+import { ExamStudent } from './exam-student.model';
 
 @Table({
     tableName: 'exams_table',
@@ -41,8 +42,8 @@ export class Exam extends BaseModel {
     @Column(DataType.DATE)
     date: Date;
 
-    // @BelongsToMany(() => User, () => ExamStudent)
-    // students: User[];
+    @BelongsToMany(() => User, () => ExamStudent)
+    studentsList: User[];
   
     @BelongsToMany(() => Question, () => ExamQuestion)
     questionsList: Question[];

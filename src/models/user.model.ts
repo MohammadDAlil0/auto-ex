@@ -1,4 +1,4 @@
-import { AfterCreate, AfterFind, AfterSave, AfterUpdate, BeforeCreate, BelongsTo, Column, DataType, Default, ForeignKey, IsEmail, IsNumeric, Table, Unique } from "sequelize-typescript";
+import { AfterCreate, AfterFind, AfterSave, AfterUpdate, BeforeCreate, BelongsTo, BelongsToMany, Column, DataType, Default, ForeignKey, IsEmail, IsNumeric, Table, Unique } from "sequelize-typescript";
 import { BaseModel } from "./base.model";
 import { Role } from "src/types/enums";
 import { CreationOptional } from "@sequelize/core";
@@ -6,6 +6,8 @@ import { IsDate, IsOptional } from "class-validator";
 import * as argon from 'argon2';
 import { BadRequestException } from "@nestjs/common";
 import { AutoMap } from "@automapper/classes";
+import { Exam } from "./exam.model";
+import { ExamStudent } from "./exam-student.model";
 
 @Table({
     tableName: 'usersTable',
@@ -82,8 +84,7 @@ export class User extends BaseModel {
     }
 
     // @BelongsToMany(() => Exam, () => ExamStudent)
-    // @ForeignKey(() => ExamStudent)
-    // exams: Exam[];
+    // examsList: Exam[];
 
     // @HasMany(() => Exam, {as: 'createdExams'})
     // createdExams: Exam[];
