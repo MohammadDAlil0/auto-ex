@@ -73,6 +73,7 @@ export class User extends BaseModel {
 
     @BelongsTo(() => User, { foreignKey: 'roleChangedBy', as: 'roleChangedByUser' })
     roleChangedByUser?: User;
+    ExamStudent: any;
 
     @BeforeCreate
     static async hashPassword(instance: User) {

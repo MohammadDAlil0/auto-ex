@@ -23,4 +23,7 @@ export class ExamQuestion extends BaseModel {
   @Default(10)
   @Column(DataType.INTEGER)
   mark: number;
+
+  @Column(DataType.INTEGER)
+  answer: number;
 }

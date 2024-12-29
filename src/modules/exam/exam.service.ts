@@ -19,6 +19,9 @@ import { ExamStatus, Role } from 'src/types/enums';
 import { AddExamStudentResponseDto } from './dto/add-exam-student.response.dto';
 import { RegisterExamDto } from './dto/register-exam.dto';
 import { ChangeStatusDto } from './dto/change-status.dto';
+import { SelectOptionDto } from './dto/select-option.dto';
+import { QuestionStudent } from 'src/models/question-student.model';
+import { Op } from 'sequelize';
 
 @Injectable()
 export class ExamService {
@@ -26,6 +29,8 @@ export class ExamService {
         @InjectModel(Exam) private readonly ExamModel: typeof Exam,
         @InjectModel(ExamQuestion) private readonly ExamQuestionModel: typeof ExamQuestion,
         @InjectModel(ExamStudent) private readonly ExamStudentModel: typeof ExamStudent,
+        @InjectModel(QuestionStudent) private readonly QuestionStudentModel: typeof QuestionStudent,
+        @InjectModel(Question) private readonly QuestionModel: typeof Question,
         @InjectMapper() private readonly mapper: Mapper
     ) {}
 
@@ -38,8 +43,10 @@ export class ExamService {
     }
 
     async createExamQuestion(dto: CreateExamQuestionDto) {
+        const question = await this.QuestionModel.findByPk(dto.questionId);
         const doc = await this.ExamQuestionModel.create({
-            ...dto
+            ...dto,
+            answer: question.answer
         });
         return this.mapper.map(doc, ExamQuestion, CreateExamQuestionResponseDto)
     }
@@ -92,7 +99,6 @@ export class ExamService {
         // Remove `answer` from each question
         plainExam.questionsList.forEach((question) => {
             delete question.answer;
-            delete question.ExamQuestion;
         });
 
         return plainExam;
@@ -174,4 +180,82 @@ export class ExamService {
         doc.acceptedBy = curUser.id;
         return await doc.save();
     }
+
+    async selectOption(curUser: User, dto: SelectOptionDto) {
+        let doc = await this.QuestionStudentModel.findOne({
+            where: {
+                examQuestionId: dto.examQuestionId,
+                studentId: curUser.id
+            }
+        });
+        if (!doc) {     // Create a new one
+            doc = await this.QuestionStudentModel.create({
+                ...dto,
+                studentId: curUser.id
+            });
+            return doc;
+        }
+        else {
+            await this.QuestionStudentModel.update({
+                selectNumber: dto.selectNumber
+            }, {
+                where: {
+                    examQuestionId: dto.examQuestionId,
+                    studentId: curUser.id 
+                }
+            });
+            return 'Updated Successfuly';
+        }
+    }
+    
+    async submitExam(curUser: User, examId: string) {
+        const questions = await this.ExamQuestionModel.findAll({
+            where: {
+                examId: examId
+            }
+        });
+    
+        const questionIds = questions.map(q => q.id);
+    
+        const selectedAnswers = await this.QuestionStudentModel.findAll({
+            where: {
+                examQuestionId: {
+                    [Op.in]: questionIds
+                },
+                studentId: curUser.id
+            }
+        });
+    
+        let totalMarks = 0;
+    
+        questions.forEach((question) => {
+            const studentAnswer = selectedAnswers.find(sa => sa.examQuestionId === question.id);
+            if (studentAnswer && studentAnswer.selectNumber === question.answer) {
+                totalMarks += question.mark;
+            }
+        });
+
+        await this.ExamStudentModel.update({
+            mark: totalMarks
+        }, {
+            where: {
+                examId: examId,
+                studentId: curUser.id
+            }
+        });
+
+        await this.QuestionStudentModel.destroy({
+            where: {
+                examQuestionId: {
+                    [Op.in]: questionIds
+                },
+                studentId: curUser.id
+            }
+        })
+
+        return {
+            selectedAnswers,
+            totalMarks
+        };
+    }   
 }

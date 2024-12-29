@@ -113,3 +113,23 @@ export function ChangeStatusDecorator() {
         Roles(Role.ADMIN, Role.TEACHER)
     )
 }
+
+export function SelectOptionDecorator() {
+    return applyDecorators(
+        ApiOperation({ summary: 'Select option of a question' }),
+        ApiResponse({ status: 200, description: 'You will get a message' }),
+        ApiBearerAuth(),
+        UseGuards(JwtGuard, RolesGuard),
+        Roles(Role.STUDENT)
+    )
+}
+
+export function SubmitExamDecorator() {
+    return applyDecorators(
+        ApiOperation({ summary: 'Submit Exam' }),
+        ApiResponse({ status: 200, description: 'You will get a message' }),
+        ApiBearerAuth(),
+        UseGuards(JwtGuard, RolesGuard),
+        Roles(Role.STUDENT)
+    )
+}

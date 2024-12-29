@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get, Param, ParseUUIDPipe, Patch, Post, Put, Query } from '@nestjs/common';
 import { CreateExamDto } from './dto/create-exam.dto';
 import { ExamService } from './exam.service';
-import { AddStudentExamDecorators, ChangeStatusDecorator, CreateExamDecorator, CreateExamQuestionDecorator, DeleteExamDecorator, DeleteStudentExamDecorators, GetAllExamsDecorator, GetExamDecorator, GlobalExamDecorator, RegisterExamDecorator, RemoveExamQuestionDecorator, UpdateExamDecorator, UpdateExamQuestionDecorator } from 'src/decorators/appliers/exam-appliers.decorator';
+import { AddStudentExamDecorators, ChangeStatusDecorator, CreateExamDecorator, CreateExamQuestionDecorator, DeleteExamDecorator, DeleteStudentExamDecorators, GetAllExamsDecorator, GetExamDecorator, GlobalExamDecorator, RegisterExamDecorator, RemoveExamQuestionDecorator, SelectOptionDecorator, SubmitExamDecorator, UpdateExamDecorator, UpdateExamQuestionDecorator } from 'src/decorators/appliers/exam-appliers.decorator';
 import { GetUser } from 'src/decorators/auth/get-user.decortator';
 import { User } from 'src/models/user.model';
 import { QueryParamsDto } from 'src/providers/query-parameters/dto/query-parameters';
@@ -11,6 +11,7 @@ import { AddExamStudentDto } from './dto/add-exam-student.dto';
 import { RegisterExamDto } from './dto/register-exam.dto';
 import { ExamStatus } from 'src/types/enums';
 import { ChangeStatusDto } from './dto/change-status.dto';
+import { SelectOptionDto } from './dto/select-option.dto';
 
 @GlobalExamDecorator()
 @Controller('exam')
@@ -50,6 +51,18 @@ export class ExamController {
     @ChangeStatusDecorator()
     changeStatus(@GetUser() curUser: User,@Body() dto: ChangeStatusDto) {
         return this.examService.changeStatus(curUser, dto);
+    }
+
+    @Post('select-option')
+    @SelectOptionDecorator()
+    selectOption(@GetUser() curUser: User, @Body() dto: SelectOptionDto) {
+        return this.examService.selectOption(curUser, dto);
+    }
+
+    @Post('submit-exam/:examId')
+    @SubmitExamDecorator()
+    submitExam(@GetUser() curUser: User, @Param('examId') examId: string) {
+        return this.examService.submitExam(curUser, examId);
     }
 
     @Post()
