@@ -73,7 +73,7 @@ export class ExamService {
     }
 
     async getExam(examId: string, user: User) {
-        const exam = await this.ExamModel.findOne({
+        const exam: any = await this.ExamModel.findOne({
             where: {
                 id: examId
             },
@@ -87,18 +87,47 @@ export class ExamService {
         if (exam.createdBy === user.id) {
             return exam
         }
-        const isStudent: any = exam.studentsList.find((el) => el.id === user.id);
-        if (!isStudent || isStudent.ExamStudent.status !== ExamStatus.ACCEPTED || exam.date.getTime() >= Date.now()) {
+        const student: any = exam.studentsList.find((el) => el.id === user.id);
+        if (!student || student.ExamStudent.status !== ExamStatus.ACCEPTED || exam.date.getTime() >= Date.now()) {
             throw new UnauthorizedException("You don't have a permission to get the exam");
         }
-        const plainExam = exam.toJSON();
+        let questionsList = exam.questionsList;
+        if (student.ExamStudent.mark) {
+            const questionIds = exam.questionsList.map(q => q.ExamQuestion.id);
 
-        // Remove `studentsList`
+            const selectedAnswers = await this.QuestionStudentModel.findAll({
+                where: {
+                    examQuestionId: {
+                        [Op.in]: questionIds
+                    },
+                    studentId: user.id
+                }
+            });
+        
+            let totalMarks = 0;
+        
+            questionsList = exam.questionsList.map((question) => {
+                const studentAnswer = selectedAnswers.find(sa => sa.examQuestionId === question.ExamQuestion.id);
+                let correctness = false, selectedNumber = null;
+                if (studentAnswer && studentAnswer.selectNumber === question.answer) {
+                    totalMarks += question.ExamQuestion.mark;
+                    correctness = true;
+                    selectedNumber = studentAnswer.selectNumber;
+                }
+                return {
+                    ...question.toJSON(),
+                    correctness,
+                    selectedNumber
+                }
+            });
+            
+        }
+        const plainExam = exam.toJSON();
+        plainExam.questionsList = questionsList;
         delete plainExam.studentsList;
 
-        // Remove `answer` from each question
         plainExam.questionsList.forEach((question) => {
-            delete question.answer;
+            delete question.ExamQuestion.answer;
         });
 
         return plainExam;
@@ -243,15 +272,6 @@ export class ExamService {
                 studentId: curUser.id
             }
         });
-
-        await this.QuestionStudentModel.destroy({
-            where: {
-                examQuestionId: {
-                    [Op.in]: questionIds
-                },
-                studentId: curUser.id
-            }
-        })
 
         return {
             selectedAnswers,
