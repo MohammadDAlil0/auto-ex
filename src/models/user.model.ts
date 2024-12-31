@@ -83,10 +83,4 @@ export class User extends BaseModel {
             throw new BadRequestException('Please provide a password when you are creating a user');
         }
     }
-
-    // @BelongsToMany(() => Exam, () => ExamStudent)
-    // examsList: Exam[];
-
-    // @HasMany(() => Exam, {as: 'createdExams'})
-    // createdExams: Exam[];
 }

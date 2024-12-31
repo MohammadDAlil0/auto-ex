@@ -9,7 +9,6 @@ import { UpdateExamDto } from './dto/update-exam.dto';
 import { CreateExamQuestionDto } from './dto/create-exam-question.dto';
 import { AddExamStudentDto } from './dto/add-exam-student.dto';
 import { RegisterExamDto } from './dto/register-exam.dto';
-import { ExamStatus } from 'src/types/enums';
 import { ChangeStatusDto } from './dto/change-status.dto';
 import { SelectOptionDto } from './dto/select-option.dto';
 

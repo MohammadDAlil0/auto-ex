@@ -1,5 +1,4 @@
 import { AutoMap } from "@automapper/classes";
-import { UUID } from "crypto";
 
 export class CreateUserResponseDto {
     @AutoMap()
