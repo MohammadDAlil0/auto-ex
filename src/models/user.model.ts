@@ -1,16 +1,13 @@
-import { AfterCreate, AfterFind, AfterSave, AfterUpdate, BeforeCreate, BelongsTo, BelongsToMany, Column, DataType, Default, ForeignKey, IsEmail, IsNumeric, Table, Unique } from "sequelize-typescript";
+import { BeforeCreate, BelongsTo, Column, DataType, Default, ForeignKey, IsEmail, IsNumeric, NotEmpty, Table, Unique } from "sequelize-typescript";
 import { BaseModel } from "./base.model";
 import { Role } from "src/types/enums";
 import { CreationOptional } from "@sequelize/core";
-import { IsDate, IsOptional } from "class-validator";
 import * as argon from 'argon2';
 import { BadRequestException } from "@nestjs/common";
 import { AutoMap } from "@automapper/classes";
-import { Exam } from "./exam.model";
-import { ExamStudent } from "./exam-student.model";
 
 @Table({
-    tableName: 'usersTable',
+    tableName: 'user_table',
     timestamps: true,
     indexes: [
         {
@@ -25,6 +22,7 @@ import { ExamStudent } from "./exam-student.model";
 })
 export class User extends BaseModel {
     @AutoMap()
+    @NotEmpty
     @Column(DataType.STRING)
     username: string;
 
@@ -44,29 +42,22 @@ export class User extends BaseModel {
 
     @AutoMap()
     @IsNumeric
-    @IsOptional()
     @Column(DataType.INTEGER)
     phoneNumber?: number;
 
     @Column(DataType.DATE)
-    @IsDate()
-    @IsOptional()
     passwordChangedAt?: Date;
 
     @Column(DataType.STRING)
-    @IsOptional()
     passwordResetToken?: string;
   
     @Column(DataType.DATE)
-    @IsDate() //Last Step
-    @IsOptional()
     passwordResetExpires?: Date;
 
     @Column(DataType.STRING)
     verifyEmail: CreationOptional<string>;
 
     @AutoMap()
-    @IsOptional()
     @ForeignKey(() => User)
     @Column(DataType.UUID)
     roleChangedBy?: string;

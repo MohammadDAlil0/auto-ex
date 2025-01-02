@@ -11,6 +11,7 @@ import { ExamStudent } from 'src/models/exam-student.model';
 import { AddExamStudentResponseDto } from 'src/modules/exam/dto/add-exam-student.response.dto';
 import { CreateExamQuestionResponseDto } from 'src/modules/exam/dto/create-exam-question.respose.dto';
 import { ExamQuestion } from 'src/models/exam-question.model';
+import { GetUsersResponseDto } from 'src/modules/user/dto/get-users.response.dto';
 
 @Injectable()
 export class UserProfile extends AutomapperProfile {
@@ -21,7 +22,10 @@ export class UserProfile extends AutomapperProfile {
     override get profile(): MappingProfile {
         return (mapper: Mapper) => {
             createMap(mapper, User, CreateUserResponseDto);
-            createMap(mapper, ExamStudent, AddExamStudentResponseDto)
+            createMap(mapper, User, GetUsersResponseDto,
+              forMember( (destination) => destination.roleChangedByUserId, mapFrom((source) => source.roleChangedByUser?.id) ),
+              forMember( (destination) => destination.roleChangedByUsername, mapFrom((source) => source.roleChangedByUser?.username) ));
+            createMap(mapper, ExamStudent, AddExamStudentResponseDto);
         };
     }
 }

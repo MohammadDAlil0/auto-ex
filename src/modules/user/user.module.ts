@@ -1,11 +1,10 @@
-import { Module } from '@nestjs/common';
-import { UserController } from './user.controller';
-import { UserService } from './user.service';
-import { AutomapperModule } from '@automapper/nestjs';
-import { SequelizeModule } from '@nestjs/sequelize';
-import { User } from 'src/models/user.model';
-import { ExamStudent } from 'src/models/exam-student.model';
-import { UserProfile } from 'src/common/auto-mapper/auto-mapper-profiles';
+import { AutomapperModule } from "@automapper/nestjs";
+import { Module } from "@nestjs/common";
+import { SequelizeModule } from "@nestjs/sequelize";
+import { User } from "src/models";
+import { UserController } from "./user.controller";
+import { UserService } from "./user.service";
+import { UserProfile } from "src/common/auto-mapper/auto-mapper-profiles";
 
 @Module({
   imports: [

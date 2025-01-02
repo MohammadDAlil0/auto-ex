@@ -9,7 +9,7 @@ export class UserApi implements CanActivate {
     const userId = request.params.userId;
 
     if (curUser.id === userId) {
-      throw new BadRequestException("You can't do this action on your self");
+      throw new BadRequestException("You can't do this action on yourself");
     }
 
     return true;

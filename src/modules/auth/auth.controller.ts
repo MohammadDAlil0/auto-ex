@@ -2,8 +2,6 @@ import { Body, Controller, Param, Post, Put } from "@nestjs/common";
 import { AuthService } from "./auth.service";
 import { ChangeRoleDecorator, LoginDecorators, SignupDecorators } from "src/decorators/appliers/auth-appliers.decorator";
 import { ChangeRoleDto, CreateUserDto, LoginDto } from "./dto";
-import { GetUser } from "src/decorators/auth/get-user.decortator";
-import { User } from "src/models";
 
 @Controller('auth')
 export class AuthController {

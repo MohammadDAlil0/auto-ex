@@ -1,4 +1,4 @@
-import { IsArray, IsDefined, IsNotEmpty, IsString, IsUUID } from "class-validator";
+import { IsArray, IsNotEmpty, IsString } from "class-validator";
 import { ApiProperty } from "@nestjs/swagger";
 import { IsAnswerValid } from "src/decorators/validators/answer.validator";
 import { AutoMap } from "@automapper/classes";
@@ -21,6 +21,7 @@ export class CreateQuestionDto {
         example: ['option1', 'option2', 'option3', 'option4']
     })
     @IsArray()
+    @IsNotEmpty()
     @IsString({ each: true })
     options: string[];
 
