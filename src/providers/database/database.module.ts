@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Global, Module } from '@nestjs/common';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { ConfigService } from '@nestjs/config';
 import { User } from 'src/models/user.model';
@@ -7,7 +7,9 @@ import { Question } from 'src/models/question.model';
 import { ExamQuestion } from 'src/models/exam-question.model';
 import { ExamStudent } from 'src/models/exam-student.model';
 import { QuestionStudent } from 'src/models/question-student.model';
+import { DataBaseService } from './database.service';
 
+@Global()
 @Module({
   imports: [
     SequelizeModule.forRootAsync({
@@ -29,5 +31,7 @@ import { QuestionStudent } from 'src/models/question-student.model';
       inject: [ConfigService],
     }),
   ],
+  providers: [DataBaseService],
+  exports: [DataBaseService]
 })
 export class DatabaseModule {}

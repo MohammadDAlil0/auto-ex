@@ -24,7 +24,7 @@ async function bootstrap() {
   SwaggerModule.setup('api', app, documentFactory);
 
   // Global filters and interceptors
-  app.useGlobalFilters(new SequelizeExceptionFilter(), new badRequestExceptionFilter(), new httpExceptionFilter());
+  app.useGlobalFilters(new httpExceptionFilter(), new SequelizeExceptionFilter(), new badRequestExceptionFilter());
   app.useGlobalInterceptors(new CustomResponseInterceptor())
 
   await app.listen(process.env.PORT ?? 3000);

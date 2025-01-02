@@ -1,13 +1,13 @@
-import { Module } from '@nestjs/common';
-import { AuthController } from './auth.controller';
-import { AuthService } from './auth.service';
-import { SequelizeModule } from '@nestjs/sequelize';
-import { User } from 'src/models/user.model';
-import { JwtModule } from '@nestjs/jwt';
-import { AutomapperModule } from '@automapper/nestjs';
-import { UserProfile } from 'src/common/auto-mapper/auto-mapper-profiles';
-import { JWTStrategy } from 'src/common/stratgies/jwt.strategy';
-import { ScheduleModule } from '@nestjs/schedule';
+import { AutomapperModule } from "@automapper/nestjs";
+import { Module } from "@nestjs/common";
+import { JwtModule } from "@nestjs/jwt";
+import { ScheduleModule } from "@nestjs/schedule";
+import { SequelizeModule } from "@nestjs/sequelize";
+import { User } from "src/models";
+import { AuthController } from "./auth.controller";
+import { JWTStrategy } from "src/common/stratgies/jwt.strategy";
+import { AuthService } from "./auth.service";
+import { UserProfile } from "src/common/auto-mapper/auto-mapper-profiles";
 
 @Module({
   imports: [

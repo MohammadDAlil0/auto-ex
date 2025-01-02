@@ -1,19 +1,16 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
-import { InjectModel } from '@nestjs/sequelize';
-import { User } from 'src/models/user.model';
-import { CreateUserDto } from './dto/create-user.dto';
-import { ConfigService } from '@nestjs/config';
-import { InjectMapper } from '@automapper/nestjs';
-import { Mapper } from '@automapper/core';
-import { JwtService } from '@nestjs/jwt';
-import * as argon from 'argon2';
-import { LoginDto } from './dto/login.dto';
-import { CreateUserResponseDto } from './dto/create-user.response.dto';
-import { UUID } from 'crypto';
-import { ChangeRoleDto } from './dto/change-role.dto';
-import { Role } from 'src/types/enums';
-import { Op } from 'sequelize';
-import { Cron } from '@nestjs/schedule';
+import { Mapper } from "@automapper/core";
+import { InjectMapper } from "@automapper/nestjs";
+import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
+import { JwtService } from "@nestjs/jwt";
+import { InjectModel } from "@nestjs/sequelize";
+import { User } from "src/models";
+import { ChangeRoleDto, CreateUserDto, CreateUserResponseDto, LoginDto } from "./dto";
+import * as argon from "argon2";
+import { Cron } from "@nestjs/schedule";
+import { Role } from "src/types/enums";
+import { Op } from "sequelize";
+import { DataBaseService } from "src/providers/database/database.service";
 
 @Injectable()
 export class AuthService {
@@ -21,7 +18,8 @@ export class AuthService {
         @InjectModel(User) private readonly UserModel: typeof User,
         private readonly config: ConfigService,
         @InjectMapper() private readonly mapper: Mapper,
-        private readonly jwt: JwtService
+        private readonly jwt: JwtService,
+        private readonly dataBaseService: DataBaseService
     ) {}
 
     async signup(createUserDto: CreateUserDto) {
@@ -35,15 +33,11 @@ export class AuthService {
     }
   
   async login(dto: LoginDto) {
-    const curUser = await this.UserModel.findOne({
+    const curUser: User = await this.dataBaseService.findOneOrThrow(this.UserModel, {
       where: {
         email: dto.email
       }
     });
-    
-    if (!curUser) {
-      throw new NotFoundException('User not found!');
-    }
     
     const userMathPassword = await argon.verify(curUser.hash, dto.password);
     
@@ -59,15 +53,8 @@ export class AuthService {
     }
   }
 
-  async changeRole(curUser: User, userId: string, dto: ChangeRoleDto) {
-    if (curUser.id == userId) {
-      throw new BadRequestException("You can't change your role")
-    }
-
-    const updatedUser = await User.findByPk(userId);
-    if (!updatedUser) {
-      throw new NotFoundException('Invalid user ID');
-    }
+  async changeRole(userId: string, dto: ChangeRoleDto) {
+    const updatedUser: User = await this.dataBaseService.findByPkOrThrow(this.UserModel, userId);
  
     updatedUser.role = dto.role;
     updatedUser.roleChangedBy = userId;
