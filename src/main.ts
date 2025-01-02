@@ -2,7 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { SequelizeExceptionFilter } from './exceptions/sequelize-exception.filter';
+import { badRequestExceptionFilter, httpExceptionFilter, SequelizeExceptionFilter } from './exceptions/sequelize-exception.filter';
 import { CustomResponseInterceptor } from './common/interceptors/custom.interceptor';
 
 async function bootstrap() {
@@ -24,7 +24,7 @@ async function bootstrap() {
   SwaggerModule.setup('api', app, documentFactory);
 
   // Global filters and interceptors
-  app.useGlobalFilters(new SequelizeExceptionFilter());
+  app.useGlobalFilters(new SequelizeExceptionFilter(), new badRequestExceptionFilter(), new httpExceptionFilter());
   app.useGlobalInterceptors(new CustomResponseInterceptor())
 
   await app.listen(process.env.PORT ?? 3000);

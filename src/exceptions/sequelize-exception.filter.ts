@@ -3,27 +3,48 @@ import { Response } from 'express';
 import { UniqueConstraintError, ValidationError } from 'sequelize';
 import { GlobalResponse } from 'src/constants/responses';
 
-@Catch(UniqueConstraintError, ValidationError, HttpException)
-export class SequelizeExceptionFilter implements ExceptionFilter {
-  catch(exception: UniqueConstraintError | ValidationError | HttpException | BadRequestException, host: ArgumentsHost) {
+@Catch(HttpException)
+export class httpExceptionFilter implements ExceptionFilter {
+  catch(exception: any, host: ArgumentsHost) {
+    const ctx = host.switchToHttp();
+    const response = ctx.getResponse<Response>();
+    const request = ctx.getRequest<Request>();
+    console.log(exception.constructor().name);
+
+    response.status(exception.getStatus()).json(GlobalResponse({
+      path: request.url,
+      statusCode: exception.getStatus(),
+      messages: [exception.message]
+    }));
+  }
+}
+
+@Catch(BadRequestException)
+export class badRequestExceptionFilter implements ExceptionFilter {
+  catch(exception: any, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
     const request = ctx.getRequest<Request>();
 
-    console.log('Error type:', exception.constructor.name);
-
-    if (exception instanceof UniqueConstraintError) {
-      return response.status(409).json(GlobalResponse(request, response, exception, 409, exception.errors.map(error => error.message)));
-    } else if (exception instanceof ValidationError) {
-      return response.status(400).json(GlobalResponse(request, response, exception, 400, exception.errors.map(error => error.message)));
-    } else if (exception instanceof BadRequestException) {
-      const errorResponse = exception.getResponse(); 
-      const message = (typeof errorResponse === 'object' && 'message' in errorResponse) ? errorResponse['message'] : errorResponse; 
-      return response.status(exception.getStatus()).json(GlobalResponse(request, response, exception, exception.getStatus(), message));
-    } else if (exception instanceof HttpException) {
-      return response.status(exception.getStatus()).json(GlobalResponse(request, response, exception, exception.getStatus(), exception.message));
-    } else {
-      return response.status(500).json(GlobalResponse(request, response, exception, 500, 'Internal Error'));
-    }
+    response.status(exception.getStatus()).json(GlobalResponse({
+      path: request.url,
+      statusCode: exception.getStatus(),
+      messages: (exception.getResponse() as any).message || 'Bad Exception'
+    }));
   }
+}
+
+@Catch(UniqueConstraintError, ValidationError)
+export class SequelizeExceptionFilter implements ExceptionFilter {
+    catch(exception: any, host: ArgumentsHost) {
+        const ctx = host.switchToHttp();
+        const response = ctx.getResponse<Response>();
+        const request = ctx.getRequest<Request>();
+
+        response.status(409).json(GlobalResponse({
+          path: request.url,
+          statusCode: 409,
+          messages: exception.errors.map((e: any) => e.message),
+      }));
+    }
 }

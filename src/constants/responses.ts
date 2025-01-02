@@ -1,18 +1,10 @@
-export const GlobalResponse = (request: any, response: any, data?: any, statusCode?: number | undefined, message?: any) => (
+export const GlobalResponse = (options: {
+    path?: string;
+    data?: any;
+    statusCode?: number;
+    messages?: any[];
+}) => (
     process.env.NODE_ENV === 'DEVELOPMENT' ? 
-    developmentResponse(request, response, data, statusCode, message) : 
-    productionResponse(response, statusCode, message)
+    { ...options, timestamp: Date.now() } : 
+    { statusCode: options.statusCode, messages: options.messages }
 );
-
-export const developmentResponse = (request: any, response: any, data?: any, statusCode?: number | undefined, message?: any) => ({
-    statusCode: statusCode || response.statusCode,
-    messages: Array.isArray(message) ? message : [message || response.message],
-    timestamp: Date.now(),
-    path: request.url,
-    data,
-});
-
-export const productionResponse = (response: any, statusCode?: number | undefined, message?: any) => ({
-    statusCode: statusCode || response.statusCode,
-    messages: Array.isArray(message) ? message : [message || response.message]
-});
