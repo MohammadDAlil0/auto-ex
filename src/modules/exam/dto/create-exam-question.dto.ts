@@ -26,9 +26,9 @@ export class CreateExamQuestionDto {
     @AutoMap()
     @ApiProperty({
         description: 'mark of the question',
-        type: String,
+        type: Number,
         example: 10
     })
     @IsNumber()
-    mark: string;
+    mark: number;
 }

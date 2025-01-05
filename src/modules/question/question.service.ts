@@ -27,7 +27,7 @@ export class QuestionService {
 
 
     async getAllQuestions(query: QueryParamsDto, curUser: User): Promise<CreateQuestionResponseDto[]> {
-        const queryFilter = new GlobalQueryFilter<User>(query, ['description', 'options', 'answer'])
+        const queryFilter = new GlobalQueryFilter<User>(query, ['id', 'description', 'options', 'answer'])
         .setFields()
         .setSearch()
         .setPagination()

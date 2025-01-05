@@ -1,4 +1,3 @@
-import { AutoMap } from "@automapper/classes";
 import { ApiProperty } from "@nestjs/swagger";
 import { IsDefined, IsEnum, IsUUID } from "class-validator";
 import { ExamStatus } from "src/types/enums";

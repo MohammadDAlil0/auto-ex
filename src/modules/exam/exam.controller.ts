@@ -1,31 +1,26 @@
-import { Body, Controller, Delete, Get, Param, ParseUUIDPipe, Patch, Post, Put, Query } from '@nestjs/common';
-import { CreateExamDto } from './dto/create-exam.dto';
-import { ExamService } from './exam.service';
-import { AddStudentExamDecorators, ChangeStatusDecorator, CreateExamDecorator, CreateExamQuestionDecorator, DeleteExamDecorator, DeleteStudentExamDecorators, GetAllExamsDecorator, GetExamDecorator, GlobalExamDecorator, RegisterExamDecorator, RemoveExamQuestionDecorator, SelectOptionDecorator, SubmitExamDecorator, UpdateExamDecorator, UpdateExamQuestionDecorator } from 'src/decorators/appliers/exam-appliers.decorator';
-import { GetUser } from 'src/decorators/auth/get-user.decortator';
-import { User } from 'src/models/user.model';
-import { QueryParamsDto } from 'src/providers/query-parameters/dto/query-parameters';
-import { UpdateExamDto } from './dto/update-exam.dto';
-import { CreateExamQuestionDto } from './dto/create-exam-question.dto';
-import { AddExamStudentDto } from './dto/add-exam-student.dto';
-import { RegisterExamDto } from './dto/register-exam.dto';
-import { ChangeStatusDto } from './dto/change-status.dto';
-import { SelectOptionDto } from './dto/select-option.dto';
+import { Controller, Post, Body, Delete, Param, Get, Query, ParseUUIDPipe, Patch } from "@nestjs/common";
+import { GlobalExamDecorator, CreateExamQuestionDecorator, RemoveExamQuestionDecorator, AddStudentExamDecorators, DeleteStudentExamDecorators, RegisterExamDecorator, ChangeStatusDecorator, SelectOptionDecorator, SubmitExamDecorator, CreateExamDecorator, GetAllExamsDecorator, GetExamDecorator, UpdateExamDecorator, DeleteExamDecorator } from "src/decorators/appliers/exam-appliers.decorator";
+import { GetUser } from "src/decorators/auth/get-user.decortator";
+import { User } from "src/models";
+import { QueryParamsDto } from "src/providers/query-parameters/dto/query-parameters";
+import { CreateExamQuestionDto, AddExamStudentDto, ChangeStatusDto, SelectOptionDto, CreateExamDto, UpdateExamDto } from "./dto";
+import { ExamService } from "./exam.service";
 
 @GlobalExamDecorator()
 @Controller('exam')
 export class ExamController {
     constructor(private readonly examService: ExamService) {}
+    
     @Post('add-question')
     @CreateExamQuestionDecorator()
     createExamQuestion(@Body() dto: CreateExamQuestionDto) {
         return this.examService.createExamQuestion(dto);
     }
 
-    @Delete('delete-question/:id')
+    @Delete('delete-question/:examQuestionId')
     @RemoveExamQuestionDecorator()
-    remove(@Param('id') id: string) {
-        return this.examService.deleteExamQuestion(id);
+    remove(@Param('examQuestionId') examQuestionId: string) {
+        return this.examService.deleteExamQuestion(examQuestionId);
     }
 
     @Post('add-student-exam')
@@ -34,21 +29,21 @@ export class ExamController {
         return this.examService.addExamStudent(dto, curUser);
     }
 
-    @Delete('delete-student-exam/:id')
+    @Delete('delete-student-exam/:examStudentId')
     @DeleteStudentExamDecorators()
-    deleteStudentExam(@Body() dto: AddExamStudentDto, @GetUser() curUser: User) {
-        return this.examService.deleteExamStudent(dto, curUser);
+    deleteStudentExam(@Param('examStudentId') examStudentId: string, @GetUser() curUser: User) {
+        return this.examService.deleteExamStudent(examStudentId, curUser);
     }
 
-    @Post('register-exam')
+    @Post('register-exam/:examId')
     @RegisterExamDecorator()
-    registerExam(@Body() dto: RegisterExamDto, @GetUser() curUser: User) {
-        return this.examService.registerExam(dto, curUser);
+    registerExam(@Param('examId') examId: string, @GetUser() curUser: User) {
+        return this.examService.registerExam(examId, curUser);
     }
 
     @Post('change-status')
     @ChangeStatusDecorator()
-    changeStatus(@GetUser() curUser: User,@Body() dto: ChangeStatusDto) {
+    changeStatus(@GetUser() curUser: User, @Body() dto: ChangeStatusDto) {
         return this.examService.changeStatus(curUser, dto);
     }
 

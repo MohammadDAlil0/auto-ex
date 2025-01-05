@@ -30,7 +30,6 @@ import { ExamStudent } from './exam-student.model';
 })
 export class Exam extends BaseModel {
     @AutoMap()
-    @Unique
     @Column(DataType.STRING(36))
     name: string;
   

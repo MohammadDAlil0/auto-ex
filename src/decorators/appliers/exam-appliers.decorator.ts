@@ -4,6 +4,7 @@ import { RolesGuard } from "src/common/guards/roles.guard";
 import { Roles } from "../auth/roles.decorator";
 import { Role } from "src/types/enums";
 import { ApiBearerAuth, ApiOperation, ApiResponse } from "@nestjs/swagger";
+import { StudentOfExam, TeacherOfExam } from "src/common/guards";
 
 
 export function GlobalExamDecorator() {
@@ -12,6 +13,82 @@ export function GlobalExamDecorator() {
         Roles(Role.ADMIN, Role.TEACHER),
         ApiBearerAuth()
     );
+}
+
+export function CreateExamQuestionDecorator() {
+    return applyDecorators(
+        ApiOperation({ summary: 'Add Question For An Exam' }),
+        ApiResponse({ status: 201, description: 'You will get a message' }),
+        UseGuards(JwtGuard, RolesGuard, TeacherOfExam)
+    );
+}
+
+export function RemoveExamQuestionDecorator() {
+    return applyDecorators(
+        ApiOperation({ summary: 'Remove Question From An Exam' }),
+        ApiResponse({ status: 204, description: 'You will not get anything' }),
+        UseGuards(JwtGuard, RolesGuard, TeacherOfExam)
+    );
+}
+
+export function AddStudentExamDecorators() {
+    return applyDecorators(
+        ApiOperation({ summary: 'Add student for an exam' }),
+        ApiResponse({ status: 200, description: 'You will get a message' }),
+        UseGuards(JwtGuard, RolesGuard, TeacherOfExam)
+    )
+}
+
+export function DeleteStudentExamDecorators() {
+    return applyDecorators(
+        ApiOperation({ summary: 'Remove student from the current exam' }),
+        ApiResponse({ status: 204, description: 'You will not get any response' }),
+        HttpCode(HttpStatus.NO_CONTENT),
+        UseGuards(JwtGuard, RolesGuard, TeacherOfExam)
+    );
+}
+
+export function UpdateExamQuestionDecorator() {
+    return applyDecorators(
+        ApiOperation({ summary: 'Update Question For An Exam' }),
+        ApiResponse({ status: 200, description: 'You will get the updated question' }),
+    );
+}
+
+export function RegisterExamDecorator() {
+    return applyDecorators(
+        ApiOperation({ summary: 'Register a student in an exam' }),
+        ApiResponse({ status: 200, description: 'You will get a message' }),
+        Roles(Role.STUDENT, Role.ADMIN, Role.TEACHER)
+    )
+}
+
+export function ChangeStatusDecorator() {
+    return applyDecorators(
+        ApiOperation({ summary: 'Accept or regect a user for an exam' }),
+        ApiResponse({ status: 200, description: 'You will get a message' }),
+        UseGuards(JwtGuard, RolesGuard, TeacherOfExam)
+    )
+}
+
+export function SelectOptionDecorator() {
+    return applyDecorators(
+        ApiOperation({ summary: 'Select option of a question' }),
+        ApiResponse({ status: 200, description: 'You will get a message' }),
+        ApiBearerAuth(),
+        UseGuards(JwtGuard, RolesGuard, StudentOfExam),
+        Roles(Role.STUDENT)
+    )
+}
+
+export function SubmitExamDecorator() {
+    return applyDecorators(
+        ApiOperation({ summary: 'Submit Exam' }),
+        ApiResponse({ status: 200, description: 'You will get a message' }),
+        ApiBearerAuth(),
+        UseGuards(JwtGuard, RolesGuard, StudentOfExam),
+        Roles(Role.STUDENT)
+    )
 }
 
 export function CreateExamDecorator() {
@@ -49,87 +126,4 @@ export function DeleteExamDecorator() {
         ApiResponse({ status: 204, description: 'You will not get anything' }),
         HttpCode(HttpStatus.NO_CONTENT)
     );
-}
-
-export function AddStudentExamDecorators() {
-    return applyDecorators(
-        ApiOperation({ summary: 'Add student for an exam' }),
-        ApiResponse({ status: 200, description: 'You will get a message' }),
-        ApiBearerAuth(),
-        UseGuards(JwtGuard, RolesGuard),
-        Roles(Role.ADMIN, Role.TEACHER)
-    )
-}
-
-export function DeleteStudentExamDecorators() {
-    return applyDecorators(
-        ApiOperation({ summary: 'Remove student from the current exam' }),
-        ApiResponse({ status: 204, description: 'You will not get any response' }),
-        ApiBearerAuth(),
-        UseGuards(JwtGuard, RolesGuard),
-        Roles(Role.ADMIN, Role.TEACHER),
-        HttpCode(HttpStatus.NO_CONTENT)
-    );
-}
-
-export function CreateExamQuestionDecorator() {
-    return applyDecorators(
-        ApiOperation({ summary: 'Add Question For An Exam' }),
-        ApiResponse({ status: 201, description: 'You will get a message' }),
-    );
-}
-
-
-export function RemoveExamQuestionDecorator() {
-    return applyDecorators(
-        ApiOperation({ summary: 'Remove Student From An Exam' }),
-        ApiResponse({ status: 204, description: 'You will not get anything' }),
-    );
-}
-
-export function UpdateExamQuestionDecorator() {
-    return applyDecorators(
-        ApiOperation({ summary: 'Update Question For An Exam' }),
-        ApiResponse({ status: 200, description: 'You will get the updated question' }),
-    );
-}
-
-export function RegisterExamDecorator() {
-    return applyDecorators(
-        ApiOperation({ summary: 'Register a student in an exam' }),
-        ApiResponse({ status: 200, description: 'You will get a message' }),
-        ApiBearerAuth(),
-        UseGuards(JwtGuard, RolesGuard),
-        Roles(Role.STUDENT, Role.ADMIN, Role.TEACHER)
-    )
-}
-
-export function ChangeStatusDecorator() {
-    return applyDecorators(
-        ApiOperation({ summary: 'Accept or regect a user for an exam' }),
-        ApiResponse({ status: 200, description: 'You will get a message' }),
-        ApiBearerAuth(),
-        UseGuards(JwtGuard, RolesGuard),
-        Roles(Role.ADMIN, Role.TEACHER)
-    )
-}
-
-export function SelectOptionDecorator() {
-    return applyDecorators(
-        ApiOperation({ summary: 'Select option of a question' }),
-        ApiResponse({ status: 200, description: 'You will get a message' }),
-        ApiBearerAuth(),
-        UseGuards(JwtGuard, RolesGuard),
-        Roles(Role.STUDENT)
-    )
-}
-
-export function SubmitExamDecorator() {
-    return applyDecorators(
-        ApiOperation({ summary: 'Submit Exam' }),
-        ApiResponse({ status: 200, description: 'You will get a message' }),
-        ApiBearerAuth(),
-        UseGuards(JwtGuard, RolesGuard),
-        Roles(Role.STUDENT)
-    )
 }
