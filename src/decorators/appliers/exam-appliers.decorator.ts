@@ -1,10 +1,11 @@
-import { applyDecorators, HttpCode, HttpStatus, UseGuards } from "@nestjs/common";
+import { applyDecorators, HttpCode, HttpStatus, UseGuards, UseInterceptors } from "@nestjs/common";
 import { JwtGuard } from "src/common/guards/jwt.guard";
 import { RolesGuard } from "src/common/guards/roles.guard";
 import { Roles } from "../auth/roles.decorator";
 import { Role } from "src/types/enums";
-import { ApiBearerAuth, ApiOperation, ApiResponse } from "@nestjs/swagger";
+import { ApiBearerAuth, ApiBody, ApiConsumes, ApiOperation, ApiResponse } from "@nestjs/swagger";
 import { StudentOfExam, TeacherOfExam } from "src/common/guards";
+import { FileInterceptor } from "@nestjs/platform-express";
 
 
 export function GlobalExamDecorator() {

@@ -7,6 +7,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { UserModule } from './modules/user/user.module';
 import { ExamModule } from './modules/exam/exam.module';
 import { QuestionModule } from './modules/question/question.module';
+import { OldExamModule } from './modules/old-exam/old-exam.module';
 
 @Module({
   imports: [
@@ -18,7 +19,8 @@ import { QuestionModule } from './modules/question/question.module';
     AuthModule,
     UserModule,
     ExamModule,
-    QuestionModule
+    QuestionModule,
+    OldExamModule
 ],
   controllers: [],
   providers: [],
